@@ -31,11 +31,9 @@ Database.prototype.initDB = function(cb) {
 			    	db.run(query, ["admin", "admin", "qwe123", "frise.on@gmail.com", 1], function(err, row) {
 						if (err) {		
 							logger.error("Add admin:",err);
-							return cb(err);
 						}
-						db.close();
 						logger.info("Admin added. BD init");
-						return cb("Admin added");
+						db.close();
 					});
 					createTableSchedule(db);
 					createTableLectors(db);

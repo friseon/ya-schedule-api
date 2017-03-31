@@ -40,18 +40,15 @@ Application.get('/', function(req, res) {
 })
 
 Application.get('/home', function(req, res) {
-  db.initDB(function(result) {
-    res.send(result);
-  })
+  db.initDB();
   pages.home(req, res)
 })
 
 Application.get('/admin', function(req, res) {
   if (!req.session.user) {
     res.redirect('/login');
-  } else if (req.session.user.admin != 1) {
-    res.redirect('/home');
-  } else {
+  }
+  else {
     pages.admin(req, res)
   }
 })
@@ -69,7 +66,7 @@ Application.post('/login', function(req, res) {
 	db.login(req.body, function(result) {
 	    if (result.result) {
 	    	req.session.user = result.user;
-        if (req.session.user.admin === 1) {
+        if (req.session.user) {
           res.redirect('/admin');
         }
         else {
