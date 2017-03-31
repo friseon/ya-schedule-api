@@ -1,0 +1,10 @@
+<h4>Добавить нового лектора</h4>
+<p>Фамилия:</p>
+<input type="text" ng-model="model.lector.lastname">
+<p>Имя:</p>
+<input type="text" ng-model="model.lector.name">
+<p>Общая информация:</p>
+<input type="text" ng-model="model.lector.description">
+<p ng-if="model.message">{{model.message}}</p>
+<hr>
+<button ng-click="model.addLector(model.lector)" ng-disabled="!model.lector.name || !model.lector.lastname">Добавить</button>

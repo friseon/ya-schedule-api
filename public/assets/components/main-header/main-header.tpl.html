@@ -1,0 +1,4 @@
+<span ng-if="model.isAdmin" ng-click="model.linkTo('home')">Расписание</span>
+<span ng-if="model.isAdmin" ng-click="model.linkTo('admin')">Управление</span>
+<button ng-if="model.isAdmin" ng-click="model.logout()">Выход</button>
+<span ng-if="!model.isAdmin" ng-click="model.linkTo('login')">Войти</span>

@@ -1,0 +1,31 @@
+{
+  "name": "budget_2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js local",
+    "test": "make test"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "angular": "^1.6.3",
+    "angular-route": "^1.6.3",
+    "body-parser": "^1.17.0",
+    "ejs": "0.8.3",
+    "express": "^4.15.0",
+    "express-session": "^1.15.1",
+    "fs": "0.0.1-security",
+    "glob": "^7.1.1",
+    "log4js": "^1.1.1",
+    "sqlite3": "^3.1.8",
+    "winston": "^2.3.1"
+  },
+  "devDependencies": {
+    "mocha": "1.7.0",
+    "should": "1.2.1",
+    "supertest": "0.4.0",
+    "webpack": "^2.3.2"
+  }
+}
