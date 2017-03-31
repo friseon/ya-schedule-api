@@ -3,7 +3,7 @@
 ## Start 
 
 Установить все модули
-npm install
+``npm install``
 
 Запустить локальный сервер
-npm start
+``npm start``
