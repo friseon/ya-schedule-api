@@ -1,0 +1,18 @@
+<h1>Добавить новую школу</h1>
+<p>Наименование:</p>
+<input type="text" ng-model="model.school.name">
+<p>Кол-во студентов:</p>
+<input type="text" ng-model="model.school.students">
+<p ng-if="model.message">{{model.message}}</p>
+<hr>
+<button ng-click="model.addSchool(model.school)" ng-disabled="!model.school.name || !model.school.students">Добавить</button>
+<h4>Школы</h4>
+<table>
+	<tbody>
+		<tr ng-repeat="item in schools">
+			<td>{{item.name}}</td>
+			<td>{{item.students}}</td>
+			<td><button ng-click="model.remove(item)">x</button></td>
+		</tr>
+	</tbody>
+</table>

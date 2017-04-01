@@ -1,7 +1,7 @@
 (function () {
 	'use strict';
 	angular
-	    .module('budget', ["ngRoute"])
+	    .module('budget', ["ngRoute", "ui.router"])
 	    .config(function($locationProvider) {
 	        $locationProvider
 	            .html5Mode({

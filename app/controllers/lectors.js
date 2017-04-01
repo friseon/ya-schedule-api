@@ -17,7 +17,7 @@ exports.add = function(newLector, db, cb) {
         	logger.info("Добавлен лектор:", newLector.name, newLector.lastname);
         }
         db.close();
-        return cb(true)
+        return cb(true);
     })
 }
 
@@ -33,7 +33,7 @@ exports.remove = function(lector, db, cb) {
         	logger.info("Удален лектор:", lector.name, lector.lastname);
         }
         db.close();
-        return cb(true)
+        return cb(true);
     })
 }
 

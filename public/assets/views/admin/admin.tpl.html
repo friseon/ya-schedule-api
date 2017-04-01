@@ -1,5 +1,9 @@
 <div>
-	<lector-add update="update"></lector-add>
-	<lectors-list lectors="lectors" update="update"></lectors-list>
-	<button ng-click="model.logout()">Выход</button>
+	<a ui-sref="admin.lectors" ui-sref-active="active">lectors</a>
+	<a ui-sref="admin.schools" ui-sref-active="active">schools</a>
+	<!-- <lector-add update="update"></lector-add> -->
+	<!-- <lectors-list lectors="lectors" update="update"></lectors-list> -->
+	<!-- <schools schools="schools"></schools> -->
+	<!-- <button ng-click="model.logout()">Выход</button> -->
+	<ui-view></ui-view>
 </div>

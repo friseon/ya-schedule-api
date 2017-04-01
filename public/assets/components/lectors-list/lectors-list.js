@@ -25,22 +25,27 @@
 
         	var model = this;
             model.lectors = $scope.lectors;
-            model.update = $scope.update;
 
-            $scope.$watch('update', function() {
-                getLectors();
-                $scope.update = false;
+            // следим за переменной, обновляем список при изменении данных
+            $scope.$watch('update', function(newV, oldV) {
+                if (newV !== oldV) 
+                {
+                    getLectors();
+                    $scope.update = false;
+                }                
             })
 
+            // удаление лектора
             model.remove = function(lector) {
                 adminService.removeLector(lector).then(function(result){
                     $scope.update = result ? result : false;
                 });
             }
 
+            // получение списка
             var getLectors = function() {
                 adminService.getLectors().then(function(data){
-                    model.lectors = data;
+                    $scope.lectors = data;
                 });
             }
 

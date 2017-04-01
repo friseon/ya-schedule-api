@@ -1,7 +1,7 @@
-<h1>Лекторы</h1>
+<h4>Лекторы</h4>
 <table>
 	<tbody>
-		<tr ng-repeat="item in model.lectors">
+		<tr ng-repeat="item in lectors">
 			<td>{{item.fullname}}</td>
 			<td>{{item.description}}</td>
 			<td><button ng-click="model.remove(item)">x</button></td>

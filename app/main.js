@@ -9,6 +9,8 @@ var express = require('express'),
     pages = require(__dirname + '/controllers/pages'),
     lectorCtrl = require(__dirname + '/controllers/lectors'),
     Lector = require('./models/lector');
+    schoolCtrl = require(__dirname + '/controllers/schools'),
+    School = require('./models/school');
 
 var Application = express();
 var db = Database;
@@ -45,6 +47,15 @@ Application.get('/home', function(req, res) {
 })
 
 Application.get('/admin', function(req, res) {
+  if (!req.session.user) {
+    res.redirect('/login');
+  }
+  else {
+    pages.admin(req, res)
+  }
+})
+
+Application.get('/admin/*', function(req, res) {
   if (!req.session.user) {
     res.redirect('/login');
   }
@@ -120,16 +131,26 @@ Application.get('/getSchedule', function(req, res) {
 Application.post('/addSchool', function(req, res) {
 	if (req.session.user)
     {
-		db.addSchool(req.body, function(result) {
+    var school = new School(req.body);
+		schoolCtrl.add(school, db, function(result) {
 			res.send(result);
 		});
 	}
 })
 
+Application.post('/removeSchool', function(req, res) {
+  if (req.session.user) {
+    var school = new School(req.body);
+    schoolCtrl.remove(school, db, function(result) {
+      res.send(result);
+    });
+  }
+})
+
 Application.get('/getSchools', function(req, res) {
   if (req.session.user)
     {
-    db.getSchools(req.body, function(result) {
+    schoolCtrl.getSchools(db, function(result) {
       res.send(result);
     });
   }

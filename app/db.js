@@ -36,12 +36,14 @@ Database.prototype.initDB = function(cb) {
 						logger.info("Admin added. BD init");
 						db.close();
 					});
-					createTableSchedule(db);
-					createTableLectors(db);
 			    }
 			});
 		});
 	}
+
+	createTableSchedule(db);
+	createTableLectors(db);
+	createTableSchools(db);
 }
 
 // создание таблицы Schedule
@@ -101,6 +103,28 @@ Database.prototype.addLection = function(item, cb) {
 	})
 }
 
+
+// get Lection
+Database.prototype.getLection = function(idUser, cb) {	
+	var items = [];
+	var db = (new Database()).connect();
+	db.all("select directory.name, directory.type, categories.name as name_cat from directory \
+			left join categories \
+			on directory.idCategory=categories.id \
+			WHERE directory.idUser LIKE '%" + idUser + "%' or directory.idUser LIKE '%" + 1 + "%'", function(err, rows) {
+	    if (err) {
+			db.close();
+			logger.error("getDirectory:", err);
+	    	return cb(err);
+	    }
+	    rows.forEach(function (row) {
+	    	items.push(row);
+	    });
+	    db.close();
+	    return cb(items);
+	});
+}
+
 // создание таблицы Lectors
 createTableLectors = function(db) {
 	var db = (new Database()).connect();
@@ -115,6 +139,23 @@ createTableLectors = function(db) {
 	    }
 	    else {
 	    	logger.info("Create Table Lectors");
+	    	db.close();
+	    }
+	});
+}
+
+// создание таблицы Schools
+createTableSchools = function(db) {
+	var db = (new Database()).connect();
+	db.run("CREATE TABLE IF NOT EXISTS Schools (id INTEGER PRIMARY KEY ASC, \
+									name TEXT NOT NULL UNIQUE, \
+									students INTEGER NOT NULL)", function(err, row) {
+		if (err) {
+	        logger.error("Create Table Schools:", err);
+	        db.close();
+	    }
+	    else {
+	    	logger.info("Create Table Schools");
 	    	db.close();
 	    }
 	});
@@ -138,28 +179,6 @@ createTableClassrooms = function(db) {
 	    	logger.info("Create Table Classrooms");
 	    	db.close();
 	    }
-	});
-}
-
-
-// get Lection
-Database.prototype.getLection = function(idUser, cb) {	
-	var items = [];
-	var db = (new Database()).connect();
-	db.all("select directory.name, directory.type, categories.name as name_cat from directory \
-			left join categories \
-			on directory.idCategory=categories.id \
-			WHERE directory.idUser LIKE '%" + idUser + "%' or directory.idUser LIKE '%" + 1 + "%'", function(err, rows) {
-	    if (err) {
-			db.close();
-			logger.error("getDirectory:", err);
-	    	return cb(err);
-	    }
-	    rows.forEach(function (row) {
-	    	items.push(row);
-	    });
-	    db.close();
-	    return cb(items);
 	});
 }
 

@@ -25,9 +25,11 @@
         	var model = this;
 
             model.lector = {};
-
+            
+            // сообщение, если, например, такой лектор уже существует
             model.message = "";
 
+            // добавление лектора
             model.addLector = function(lector) {
                 adminService.addLector(lector).then(function(result) {
                     if (result && result.error) {
