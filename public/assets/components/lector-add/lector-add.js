@@ -10,7 +10,9 @@
             restrict: 'E',
             controller: controller,
             controllerAs: 'model',
-            scope: { },
+            scope: {
+                "update": "="
+            },
             templateUrl: 'assets/components/lector-add/lector-add.tpl.html'
         };
 
@@ -35,7 +37,7 @@
                         model.message = "";
                     }
                 });
-                console.log(lector);
+                $scope.update = true;
             }
 
         }

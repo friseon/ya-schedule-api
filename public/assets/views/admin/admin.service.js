@@ -9,14 +9,22 @@
     function service($http) {
     	var service = {
     		getLectors: getLectors,
-            addLector: addLector
+            addLector: addLector,
+            removeLector: removeLector
     	}
 
     	return service;
 
         function addLector(lector) {
-            console.log(lector);
             return $http.post('/addLector', lector).then(function(result) {
+                return result ? result.data : {};
+            }, function(err) {
+                console.log(err);
+            })
+        }
+
+        function removeLector(lector) {
+            return $http.post('/removeLector', lector).then(function(result) {
                 return result ? result.data : {};
             }, function(err) {
                 console.log(err);

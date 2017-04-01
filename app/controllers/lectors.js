@@ -20,6 +20,20 @@ exports.add = function(newLector, db, cb) {
     })
 }
 
+exports.remove = function(lector, db, cb) {
+	var query = "DELETE FROM Lectors where id = " + lector.id ;
+	db = db.connect();
+    db.run(query, function(err, row) {
+        if (err) {
+            logger.error(err);
+        }
+        else {
+        	logger.info("Удален лектор:", lector.name, lector.lastname);
+        }
+        db.close();
+    })
+}
+
 exports.getLectors = function(db, cb) {	
 	var lectors = [];
 	db = db.connect();

@@ -4,6 +4,7 @@
 		<tr ng-repeat="item in model.lectors">
 			<td>{{item.fullname}}</td>
 			<td>{{item.description}}</td>
+			<td><button ng-click="model.remove(item)">x</button></td>
 		</tr>
 	</tbody>
 </table>

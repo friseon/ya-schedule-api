@@ -11,7 +11,8 @@
             controller: controller,
             controllerAs: 'model',
             scope: {
-                lectors: "="
+                lectors: "=",
+                update: "="
             },
             templateUrl: 'assets/components/lectors-list/lectors-list.tpl.html'
         };
@@ -24,11 +25,27 @@
 
         	var model = this;
             model.lectors = $scope.lectors;
+            model.update = $scope.update;
 
-            adminService.getLectors().then(function(data){
-                console.log(data);
-                model.lectors = data;
-            });
+            $scope.$watch('update', function() {
+                getLectors();
+                $scope.update = false;
+            })
+
+            model.remove = function(lector) {
+                adminService.removeLector(lector).finally(function(data){
+                    console.log(data);
+                     $scope.update = true;
+                });
+            }
+
+            var getLectors = function() {
+                adminService.getLectors().then(function(data){
+                    model.lectors = data;
+                });
+            }
+
+            getLectors();
 
         }
     }

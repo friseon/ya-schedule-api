@@ -19,6 +19,8 @@
         function adminCtrl($scope, budgetService, adminService) {
         	var model = this;
 
+            $scope.update = false;
+
             model.initTables = function() {
                 budgetService.initTables();
             }

@@ -168,6 +168,16 @@ Application.post('/addLector', function(req, res) {
   }
 })
 
+Application.post('/removeLector', function(req, res) {
+  if (req.session.user) {
+    var lector = new Lector(req.body);
+    lectorCtrl.remove(lector, db, function(result) {
+      console.log(result);
+      res.send(result);
+    });
+  }
+})
+
 Application.get('/getLectors', function(req, res) {
   if (req.session.user)
     {

@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 10);
+/******/ 	return __webpack_require__(__webpack_require__.s = 12);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -487,7 +487,7 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
 				   name: 'December'
 				}
             ],
-            daysOfWeek: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
+            daysOfWeek: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
         });
 
 })();
@@ -628,7 +628,9 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
 /***/ }),
 /* 6 */,
 /* 7 */,
-/* 8 */
+/* 8 */,
+/* 9 */,
+/* 10 */
 /***/ (function(module, exports) {
 
 (function () {
@@ -667,8 +669,8 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
 })();
 
 /***/ }),
-/* 9 */,
-/* 10 */
+/* 11 */,
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(1);
@@ -678,7 +680,7 @@ __webpack_require__(3);
 __webpack_require__(4);
 __webpack_require__(2);
 __webpack_require__(5);
-__webpack_require__(8);
+__webpack_require__(10);
 
 /***/ })
 /******/ ]);

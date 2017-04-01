@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 9);
+/******/ 	return __webpack_require__(__webpack_require__.s = 11);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -487,7 +487,7 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
 				   name: 'December'
 				}
             ],
-            daysOfWeek: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
+            daysOfWeek: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
         });
 
 })();
@@ -634,6 +634,115 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
 
     angular
         .module('budget')
+        .directive('lectorAdd', lectorAdd);
+
+    function lectorAdd() {
+    	return {
+            restrict: 'E',
+            controller: controller,
+            controllerAs: 'model',
+            scope: {
+                "update": "="
+            },
+            templateUrl: 'assets/components/lector-add/lector-add.tpl.html'
+        };
+
+        controller.$inject = [
+            '$scope', 'adminService'
+        ];
+
+        function controller($scope, adminService) {
+
+        	var model = this;
+
+            model.lector = {};
+
+            model.message = "";
+
+            model.addLector = function(lector) {
+                adminService.addLector(lector).then(function(result) {
+                    if (result && result.error) {
+                        model.message = result.error;
+                    }
+                    else {
+                        model.message = "";
+                    }
+                });
+                $scope.update = true;
+            }
+
+        }
+    }
+
+})()
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports) {
+
+(function () {
+    'use strict';
+
+    angular
+        .module('budget')
+        .directive('lectorsList', lectorsList);
+
+    function lectorsList() {
+    	return {
+            restrict: 'E',
+            controller: controller,
+            controllerAs: 'model',
+            scope: {
+                lectors: "=",
+                update: "="
+            },
+            templateUrl: 'assets/components/lectors-list/lectors-list.tpl.html'
+        };
+
+        controller.$inject = [
+            '$scope', 'adminService'
+        ];
+
+        function controller($scope, adminService) {
+
+        	var model = this;
+            model.lectors = $scope.lectors;
+            model.update = $scope.update;
+
+            $scope.$watch('update', function() {
+                getLectors();
+                $scope.update = false;
+            })
+
+            model.remove = function(lector) {
+                adminService.removeLector(lector).finally(function(data){
+                    console.log(data);
+                     $scope.update = true;
+                });
+            }
+
+            var getLectors = function() {
+                adminService.getLectors().then(function(data){
+                    model.lectors = data;
+                });
+            }
+
+            getLectors();
+
+        }
+    }
+
+})()
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+(function () {
+    'use strict';
+
+    angular
+        .module('budget')
         .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
             $routeProvider.when('/admin', {
                 templateUrl: 'assets/views/admin/admin.tpl.html',
@@ -650,6 +759,8 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
         function adminCtrl($scope, budgetService, adminService) {
         	var model = this;
 
+            $scope.update = false;
+
             model.initTables = function() {
                 budgetService.initTables();
             }
@@ -662,7 +773,7 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
 })();
 
 /***/ }),
-/* 7 */
+/* 9 */
 /***/ (function(module, exports) {
 
 (function () {
@@ -676,14 +787,22 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
     function service($http) {
     	var service = {
     		getLectors: getLectors,
-            addLector: addLector
+            addLector: addLector,
+            removeLector: removeLector
     	}
 
     	return service;
 
         function addLector(lector) {
-            console.log(lector);
             return $http.post('/addLector', lector).then(function(result) {
+                return result ? result.data : {};
+            }, function(err) {
+                console.log(err);
+            })
+        }
+
+        function removeLector(lector) {
+            return $http.post('/removeLector', lector).then(function(result) {
                 return result ? result.data : {};
             }, function(err) {
                 console.log(err);
@@ -709,8 +828,8 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
 })()
 
 /***/ }),
-/* 8 */,
-/* 9 */
+/* 10 */,
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(1);
@@ -719,102 +838,11 @@ __webpack_require__(0);
 __webpack_require__(3);
 __webpack_require__(4);
 __webpack_require__(2);
-__webpack_require__(11);
-__webpack_require__(12);
-__webpack_require__(5);
 __webpack_require__(6);
 __webpack_require__(7);
-
-/***/ }),
-/* 10 */,
-/* 11 */
-/***/ (function(module, exports) {
-
-(function () {
-    'use strict';
-
-    angular
-        .module('budget')
-        .directive('lectorAdd', lectorAdd);
-
-    function lectorAdd() {
-    	return {
-            restrict: 'E',
-            controller: controller,
-            controllerAs: 'model',
-            scope: { },
-            templateUrl: 'assets/components/lector-add/lector-add.tpl.html'
-        };
-
-        controller.$inject = [
-            '$scope', 'adminService'
-        ];
-
-        function controller($scope, adminService) {
-
-        	var model = this;
-
-            model.lector = {};
-
-            model.message = "";
-
-            model.addLector = function(lector) {
-                adminService.addLector(lector).then(function(result) {
-                    if (result && result.error) {
-                        model.message = result.error;
-                    }
-                    else {
-                        model.message = "";
-                    }
-                });
-                console.log(lector);
-            }
-
-        }
-    }
-
-})()
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports) {
-
-(function () {
-    'use strict';
-
-    angular
-        .module('budget')
-        .directive('lectorsList', lectorsList);
-
-    function lectorsList() {
-    	return {
-            restrict: 'E',
-            controller: controller,
-            controllerAs: 'model',
-            scope: {
-                lectors: "="
-            },
-            templateUrl: 'assets/components/lectors-list/lectors-list.tpl.html'
-        };
-
-        controller.$inject = [
-            '$scope', 'adminService'
-        ];
-
-        function controller($scope, adminService) {
-
-        	var model = this;
-            model.lectors = $scope.lectors;
-
-            adminService.getLectors().then(function(data){
-                console.log(data);
-                model.lectors = data;
-            });
-
-        }
-    }
-
-})()
+__webpack_require__(5);
+__webpack_require__(8);
+__webpack_require__(9);
 
 /***/ })
 /******/ ]);
