@@ -25,6 +25,7 @@ Database.prototype.initDB = function(cb) {
 			db.run("CREATE TABLE USERS (id INTEGER PRIMARY KEY ASC, name TEXT, login TEXT NOT NULL UNIQUE, password TEXT NOT NULL, email TEXT NOT NULL UNIQUE, admin INTEGER)", function(err, row) {
 				if (err) {
 			        logger.error("Init DB:",err);
+			        db.close();
 			    }
 			    else {
 			    	var query = "INSERT into USERS (name, login, password, email, admin) values (?, ?, ?, ?, ?)";

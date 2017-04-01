@@ -33,8 +33,9 @@
                     if (result && result.error) {
                         model.message = result.error;
                     }
-                    else {
+                    else if (result === true){
                         model.message = "";
+                        model.lector = {};
                     }
                 });
                 $scope.update = true;

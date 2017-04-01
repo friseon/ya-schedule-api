@@ -664,8 +664,9 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
                     if (result && result.error) {
                         model.message = result.error;
                     }
-                    else {
+                    else if (result === true){
                         model.message = "";
+                        model.lector = {};
                     }
                 });
                 $scope.update = true;
@@ -715,9 +716,8 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
             })
 
             model.remove = function(lector) {
-                adminService.removeLector(lector).finally(function(data){
-                    console.log(data);
-                     $scope.update = true;
+                adminService.removeLector(lector).then(function(result){
+                    $scope.update = result ? result : false;
                 });
             }
 
@@ -795,7 +795,7 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
 
         function addLector(lector) {
             return $http.post('/addLector', lector).then(function(result) {
-                return result ? result.data : {};
+                return result ? result.data : false;
             }, function(err) {
                 console.log(err);
             })
@@ -803,7 +803,7 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
 
         function removeLector(lector) {
             return $http.post('/removeLector', lector).then(function(result) {
-                return result ? result.data : {};
+                return result ? result.data : false;
             }, function(err) {
                 console.log(err);
             })

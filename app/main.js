@@ -58,6 +58,7 @@ Application.get('/login', function(req, res) {
 		res.redirect('/home');
 	}
 	else {
+    db.initDB();
 		pages.login(req, res)
 	}
 })
@@ -162,7 +163,6 @@ Application.post('/addLector', function(req, res) {
   if (req.session.user) {
     var lector = new Lector(req.body);
     lectorCtrl.add(lector, db, function(result) {
-      console.log(result);
       res.send(result);
     });
   }
@@ -172,7 +172,6 @@ Application.post('/removeLector', function(req, res) {
   if (req.session.user) {
     var lector = new Lector(req.body);
     lectorCtrl.remove(lector, db, function(result) {
-      console.log(result);
       res.send(result);
     });
   }

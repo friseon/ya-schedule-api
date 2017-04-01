@@ -17,6 +17,7 @@ exports.add = function(newLector, db, cb) {
         	logger.info("Добавлен лектор:", newLector.name, newLector.lastname);
         }
         db.close();
+        return cb(true)
     })
 }
 
@@ -26,11 +27,13 @@ exports.remove = function(lector, db, cb) {
     db.run(query, function(err, row) {
         if (err) {
             logger.error(err);
+            return cb(err);
         }
         else {
         	logger.info("Удален лектор:", lector.name, lector.lastname);
         }
         db.close();
+        return cb(true)
     })
 }
 

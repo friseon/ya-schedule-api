@@ -17,7 +17,7 @@
 
         function addLector(lector) {
             return $http.post('/addLector', lector).then(function(result) {
-                return result ? result.data : {};
+                return result ? result.data : false;
             }, function(err) {
                 console.log(err);
             })
@@ -25,7 +25,7 @@
 
         function removeLector(lector) {
             return $http.post('/removeLector', lector).then(function(result) {
-                return result ? result.data : {};
+                return result ? result.data : false;
             }, function(err) {
                 console.log(err);
             })

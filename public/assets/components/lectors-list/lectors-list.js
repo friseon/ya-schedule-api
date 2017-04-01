@@ -33,9 +33,8 @@
             })
 
             model.remove = function(lector) {
-                adminService.removeLector(lector).finally(function(data){
-                    console.log(data);
-                     $scope.update = true;
+                adminService.removeLector(lector).then(function(result){
+                    $scope.update = result ? result : false;
                 });
             }
 
