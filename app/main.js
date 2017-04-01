@@ -162,7 +162,7 @@ Application.get('/getSchools', function(req, res) {
 Application.post('/addClassroom', function(req, res) {
   if (req.session.user)
     {
-    db.addClassroom(req.body, function(result) {
+    db.add(req.body, function(result) {
       res.send(result);
     });
   }

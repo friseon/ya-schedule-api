@@ -27,6 +27,10 @@
                 url: '?schools',
                 template: '<schools schools="schools"></schools>'
             })
+            $stateProvider.state('admin.class-rooms', {
+                url: '?class-rooms',
+                template: '<class-rooms class-rooms="class-rooms"></class-rooms>'
+            })
         }])
         .controller('adminCtrl', adminCtrl);
 

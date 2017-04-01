@@ -8,6 +8,7 @@ require('./public/assets/app.constants');
 require('./public/assets/components/lector-add/lector-add');
 require('./public/assets/components/lectors-list/lectors-list');
 require('./public/assets/components/schools/schools.directive');
+require('./public/assets/components/class-rooms/class-rooms.directive');
 require('./public/assets/components/main-header/main-header.directive');
 require('./public/assets/views/admin/admin');
 require('./public/assets/views/admin/admin.service');
