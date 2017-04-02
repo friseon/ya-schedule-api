@@ -551,7 +551,7 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
             return $http.get('/logout').then(function(data) {
                 // $location.path('/login');
 
-                window.location = '/'
+                window.location = '/';
                 console.log(data)
                 $route.reload();
                 localStorage.removeItem('user.email');
@@ -565,12 +565,12 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
 
         function login(user) {
             return $http.post('/login', user).then(function(result) {
-                console.log(result);
                 if (result.data.user) {                    
                     localStorage.setItem('user.email', result.data.user.email);
                     localStorage.setItem('user.id', result.data.user.id);
                     localStorage.setItem('user.admin', result.data.user.admin);
                     localStorage.setItem('user.name', result.data.user.name);
+                    window.location = '/admin'
                 }
             }, function(err) {
                 console.log(err);
@@ -750,12 +750,7 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
 
     angular
         .module('budget')
-        .config(['$routeProvider', '$locationProvider', '$stateProvider', function($routeProvider, $locationProvider, $stateProvider) {
-            // $routeProvider.when('/admin', {
-            //     templateUrl: 'assets/views/admin/admin.tpl.html',
-            //     controller: 'adminCtrl',
-            //     controllerAs: 'model'
-            // });
+        .config(['$stateProvider', function($stateProvider) {
             var admin = {
                 name: 'admin',
                 url: '/admin',

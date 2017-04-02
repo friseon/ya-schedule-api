@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="budget">
-<head>
-	<meta charset="UTF-8">
-	<title><%= title %></title>
-</head>
-<body>
-	<main-header is-admin="<%= isAdmin %>"></main-header>
-	<ui-view></ui-view>
-	<script src="bundle.js" charset="utf-8"></script>
-</body>
+<html ng-app="budget">
+	<head>
+		<meta charset="UTF-8">
+		<title><%= title %></title>
+	</head>
+	<body>
+		<main-header is-admin="<%= isAdmin %>"></main-header>
+		<ui-view></ui-view>
+		<script src="bundle.js" charset="utf-8"></script>
+	</body>
 </html>

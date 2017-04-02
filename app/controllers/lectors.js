@@ -1,8 +1,8 @@
 var logger = require('winston'),
-    Database = require('./../db'),
+    Database = require('./../db').Database,
 	Lector = require('../models/lector');
 
-var db = Database.connect();
+var db = Database;
 
 // Routes
 module.exports = function(app) {

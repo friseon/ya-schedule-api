@@ -3,21 +3,20 @@ var sqlite3 = require('sqlite3').verbose(),
 	fs = require('fs'),
 	logger = require('winston');
 
+var Database = new sqlite3.Database(dbfile);
+
 // класс объекта базы данных
-var Database = function() {
+var DatabaseParams = function(initDB) {
 	this.dbfile = "Database.db";
-	this.connect = function() {
-		return new sqlite3.Database(this.dbfile);
-	}
+	this.initDB = initDB;
 }
-module.exports = new Database();
 
-var db = (new Database).connect();
+var db = Database;
 
-Database.prototype.initDB = function(cb) {
+initDB = function() {	
 	if (!fs.existsSync(dbfile)) {
 		logger.info("File", dbfile, "doesn't exist. Creating new.");
-		db.serialize(function(exists) {
+		db.serialize(function() {
 			db.run("CREATE TABLE USERS (id INTEGER PRIMARY KEY ASC, name TEXT, login TEXT NOT NULL UNIQUE, password TEXT NOT NULL, email TEXT NOT NULL UNIQUE, admin INTEGER)", function(err, row) {
 				if (err) {
 			        logger.error("Init DB:",err);
@@ -34,15 +33,16 @@ Database.prototype.initDB = function(cb) {
 			});
 		});
 	}
-
-	createTableSchedule(db);
-	createTableLectors(db);
-	createTableSchools(db);
+	createTableSchedule();
+	createTableLectors();
+	createTableSchools();
 }
 
+exports.Database = Database;
+exports.DatabaseParams = new DatabaseParams(initDB);
+
 // создание таблицы Schedule
-createTableSchedule = function(db) {
-	var db = (new Database()).connect();
+createTableSchedule = function() {
 	db.run("CREATE TABLE IF NOT EXISTS Schedule ( id INTEGER PRIMARY KEY ASC, \
 								idLector INTEGER NOT NULL, \
 								lectionName TEXT NOT NULL, \
@@ -61,62 +61,61 @@ createTableSchedule = function(db) {
 }
 
 // get all Lectors
-var getSchedule = function(user, cb) {	
-	var schedule = [];
-	var db = (new Database()).connect();
-	db.all("SELECT id, name, lastname, description FROM Schedule", function(err, rows) {
-	    if (err) {
-	    	return cb(err);
-	    }
-	    rows.forEach(function (row) {
-	    	schedule.push(row);
-	    });
-	    return cb(schedule);
-	});
-}
+// var getSchedule = function(user, cb) {	
+// 	var schedule = [];
+// 	var db = (new Database()).connect();
+// 	db.all("SELECT id, name, lastname, description FROM Schedule", function(err, rows) {
+// 	    if (err) {
+// 	    	return cb(err);
+// 	    }
+// 	    rows.forEach(function (row) {
+// 	    	schedule.push(row);
+// 	    });
+// 	    return cb(schedule);
+// 	});
+// }
 
-// добавление записи в Lections
-var addLection = function(item, cb) {
-	var db = (new Database()).connect();
-	var query = "INSERT into Schedule (idLector, lectionName, idSchool, idRoom, date) values (?, ?, ?, ?, ?)";
-	db.run(query, [item.lector, item.lectionName, item.school, item.room, item.date], function(err, row) {
-		if (err) {			
-			if (err.toString().indexOf('UNIQUE constraint failed') >= 0) {
-				err = "Такая лекция уже существует";
-			}			
-			logger.error("Add item to Lections:", err)
-			return cb(err);
-		}
-		logger.info("Add item to Lections:", item.lectionName)
-		db.close();
-		return cb("OK");
-	})
-}
+// // добавление записи в Lections
+// var addLection = function(item, cb) {
+// 	var db = (new Database()).connect();
+// 	var query = "INSERT into Schedule (idLector, lectionName, idSchool, idRoom, date) values (?, ?, ?, ?, ?)";
+// 	db.run(query, [item.lector, item.lectionName, item.school, item.room, item.date], function(err, row) {
+// 		if (err) {			
+// 			if (err.toString().indexOf('UNIQUE constraint failed') >= 0) {
+// 				err = "Такая лекция уже существует";
+// 			}			
+// 			logger.error("Add item to Lections:", err)
+// 			return cb(err);
+// 		}
+// 		logger.info("Add item to Lections:", item.lectionName)
+// 		db.close();
+// 		return cb("OK");
+// 	})
+// }
 
 
-var getLection = function(idUser, cb) {	
-	var items = [];
-	var db = (new Database()).connect();
-	db.all("select directory.name, directory.type, categories.name as name_cat from directory \
-			left join categories \
-			on directory.idCategory=categories.id \
-			WHERE directory.idUser LIKE '%" + idUser + "%' or directory.idUser LIKE '%" + 1 + "%'", function(err, rows) {
-	    if (err) {
-			db.close();
-			logger.error("getDirectory:", err);
-	    	return cb(err);
-	    }
-	    rows.forEach(function (row) {
-	    	items.push(row);
-	    });
-	    db.close();
-	    return cb(items);
-	});
-}
+// var getLection = function(idUser, cb) {	
+// 	var items = [];
+// 	var db = (new Database()).connect();
+// 	db.all("select directory.name, directory.type, categories.name as name_cat from directory \
+// 			left join categories \
+// 			on directory.idCategory=categories.id \
+// 			WHERE directory.idUser LIKE '%" + idUser + "%' or directory.idUser LIKE '%" + 1 + "%'", function(err, rows) {
+// 	    if (err) {
+// 			db.close();
+// 			logger.error("getDirectory:", err);
+// 	    	return cb(err);
+// 	    }
+// 	    rows.forEach(function (row) {
+// 	    	items.push(row);
+// 	    });
+// 	    db.close();
+// 	    return cb(items);
+// 	});
+// }
 
 // создание таблицы Lectors
-createTableLectors = function(db) {
-	var db = (new Database()).connect();
+createTableLectors = function() {
 	db.run("CREATE TABLE IF NOT EXISTS Lectors (id INTEGER PRIMARY KEY ASC, \
 									name TEXT NOT NULL, \
 									lastname TEXT NOT NULL, \
@@ -124,35 +123,29 @@ createTableLectors = function(db) {
 									UNIQUE(name, lastname))", function(err, row) {
 		if (err) {
 	        logger.error("Create Table Lectors:", err);
-	        db.close();
 	    }
 	    else {
 	    	logger.info("Create Table Lectors");
-	    	db.close();
 	    }
 	});
 }
 
 // создание таблицы Schools
-createTableSchools = function(db) {
-	var db = (new Database()).connect();
+createTableSchools = function() {
 	db.run("CREATE TABLE IF NOT EXISTS Schools (id INTEGER PRIMARY KEY ASC, \
 									name TEXT NOT NULL UNIQUE, \
 									students INTEGER NOT NULL)", function(err, row) {
 		if (err) {
 	        logger.error("Create Table Schools:", err);
-	        db.close();
 	    }
 	    else {
 	    	logger.info("Create Table Schools");
-	    	db.close();
 	    }
 	});
 }
 
 // создание таблицы Classrooms
-createTableClassrooms = function(db) {
-	var db = (new Database()).connect();
+createTableClassrooms = function() {
 	db.run("CREATE TABLE IF NOT EXISTS Classrooms (id INTEGER PRIMARY KEY ASC, \
 									name TEXT NOT NULL, \
 									number INTEGER NOT NULL, \
@@ -162,42 +155,10 @@ createTableClassrooms = function(db) {
 									UNIQUE(name, number))", function(err, row) {
 		if (err) {
 	        logger.error("Create Table Classrooms:", err);
-	        db.close();
 	    }
 	    else {
 	    	logger.info("Create Table Classrooms");
-	    	db.close();
 	    }
 	});
 }
 
-// authorization
-Database.prototype.login = function(user, cb) {  
-  var query = "SELECT id, name, email, admin from USERS where (login = '" + user.login + "' or email = '" + user.login + "') and password = '" + user.password + "'";
-  db.all(query, function(err, rows) {
-    var res;
-    var error;
-    var selectedUser;
-    if (err) {
-      res = false;
-      error = err;
-      logger.warn('Login as', login, '- FAIL: ', err);
-    }
-    if (rows && rows.length == 1) {
-      res = true;
-      selectedUser = rows[0];
-      logger.info('Login as',  user.login, 'success');
-    } else {
-      res = false;
-      error = "Неверный логин или пароль";
-      logger.warn('Login as',  user.login, '- FAIL: Wrong login or password');
-    }
-    var result = {
-      'result': res,
-      'message': error,
-      'user': selectedUser
-    }
-    db.close();
-    return cb(result);
-  });
-}

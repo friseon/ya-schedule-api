@@ -3,12 +3,7 @@
 
     angular
         .module('budget')
-        .config(['$routeProvider', '$locationProvider', '$stateProvider', function($routeProvider, $locationProvider, $stateProvider) {
-            // $routeProvider.when('/admin', {
-            //     templateUrl: 'assets/views/admin/admin.tpl.html',
-            //     controller: 'adminCtrl',
-            //     controllerAs: 'model'
-            // });
+        .config(['$stateProvider', function($stateProvider) {
             var admin = {
                 name: 'admin',
                 url: '/admin',

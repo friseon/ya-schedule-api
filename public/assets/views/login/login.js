@@ -1,29 +1,36 @@
-// (function () {
-//     'use strict';
+(function () {
+    'use strict';
 
-//     angular
-//         .module('budget')
-//         .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
-            
-//         }])
-//         .controller('loginCtrl', loginCtrl);
+    angular
+        .module('budget')
+        .config(['$stateProvider', function($stateProvider) {
+            var login = {
+                name: 'login',
+                url: '/login',
+                controller: 'loginCtrl',
+                controllerAs: 'model',
+                templateUrl: 'assets/views/login/login.tpl.html'
+            }
 
-//         loginCtrl.$inject = [
-//             '$scope', 'budgetService'
-//         ];
+            $stateProvider.state(login);
+        }])
+        .controller('loginCtrl', loginCtrl);
 
-//         function loginCtrl($scope, budgetService) {
-//         	var model = this;
-//             console.log("login");
+        loginCtrl.$inject = [
+            '$scope', 'budgetService'
+        ];
+        function loginCtrl($scope, budgetService) {
+        	var model = this;
+            console.log("login");
 
-//             model.user = {
-//                 login: "",
-//                 password: ""
-//             }
+            model.user = {
+                login: "",
+                password: ""
+            }
 
-//             model.login = function (user) {
-//                 budgetService.login(user);
-//             }
-//         }
+            model.login = function (user) {
+                budgetService.login(user);
+            }
+        }
 
-// })();
+})();
