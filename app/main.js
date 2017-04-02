@@ -7,13 +7,12 @@ var express = require('express'),
     path = require('path'),
     appDir = path.dirname(require.main.filename),
     pages = require(__dirname + '/controllers/pages'),
-    lectorCtrl = require(__dirname + '/controllers/lectors'),
+    // lectorCtrl = require(__dirname + '/controllers/lectors'),
     Lector = require('./models/lector');
     schoolCtrl = require(__dirname + '/controllers/schools'),
     School = require('./models/school');
 
 var Application = express();
-var db = Database;
 
 var tsFormat = () => (new Date()).toLocaleTimeString();
 
@@ -34,6 +33,8 @@ Application.use(session({
 Application.set('views', __dirname + "/views");
 Application.set('view engine', 'ejs')
 
+require(__dirname + '/controllers/lectors')(Application);
+
 module.exports = Application;
 
 
@@ -42,7 +43,7 @@ Application.get('/', function(req, res) {
 })
 
 Application.get('/home', function(req, res) {
-  db.initDB();
+  Database.initDB();
   pages.home(req, res)
 })
 
@@ -69,13 +70,13 @@ Application.get('/login', function(req, res) {
 		res.redirect('/home');
 	}
 	else {
-    db.initDB();
+    Database.initDB();
 		pages.login(req, res)
 	}
 })
 
 Application.post('/login', function(req, res) {
-	db.login(req.body, function(result) {
+	Database.login(req.body, function(result) {
 	    if (result.result) {
 	    	req.session.user = result.user;
         if (req.session.user) {
@@ -99,7 +100,7 @@ Application.get('/logout', function(req, res) {
 
 
 Application.get('/init', function(req, res) {
-  db.initDB(function(result) {
+  Database.initDB(function(result) {
     res.send(result);
   })
 });
@@ -110,7 +111,7 @@ Application.get('/init', function(req, res) {
 Application.post('/addLection', function(req, res) {
   if (req.session.user)
     {
-    db.addLection(req.body, function(result) {
+    Database.addLection(req.body, function(result) {
       res.send(result);
     });
   }
@@ -119,7 +120,7 @@ Application.post('/addLection', function(req, res) {
 Application.get('/getSchedule', function(req, res) {
   if (req.session.user)
     {
-    db.getSchedule(req.body, function(result) {
+    Database.getSchedule(req.body, function(result) {
       res.send(result);
     });
   }
@@ -162,7 +163,7 @@ Application.get('/getSchools', function(req, res) {
 Application.post('/addClassroom', function(req, res) {
   if (req.session.user)
     {
-    db.add(req.body, function(result) {
+    Database.add(req.body, function(result) {
       res.send(result);
     });
   }
@@ -171,43 +172,13 @@ Application.post('/addClassroom', function(req, res) {
 Application.get('/getClassrooms', function(req, res) {
   if (req.session.user)
     {
-    db.getClassrooms(req.body, function(result) {
+    Database.getClassrooms(req.body, function(result) {
       res.send(result);
     });
   }
 })
 
 // /Classroom
-// Lectors
-
-Application.post('/addLector', function(req, res) {
-  if (req.session.user) {
-    var lector = new Lector(req.body);
-    lectorCtrl.add(lector, db, function(result) {
-      res.send(result);
-    });
-  }
-})
-
-Application.post('/removeLector', function(req, res) {
-  if (req.session.user) {
-    var lector = new Lector(req.body);
-    lectorCtrl.remove(lector, db, function(result) {
-      res.send(result);
-    });
-  }
-})
-
-Application.get('/getLectors', function(req, res) {
-  if (req.session.user)
-    {
-    lectorCtrl.getLectors(db, function(result) {
-      res.send(result);
-    });
-  }
-})
-
-// /Lectors
 
 Application.get('*', function(req, res) {
   res.send("Page not found");

@@ -1,31 +1,26 @@
 var sqlite3 = require('sqlite3').verbose(),
-	dbfile = "database.db",
+	dbfile = "Database.db",
 	fs = require('fs'),
-	logger = require('winston'),
-	lectors = require('./controllers/lectors');
+	logger = require('winston');
 
 // класс объекта базы данных
-function Database() {
-	this.dbfile = "database.db";
+var Database = function() {
+	this.dbfile = "Database.db";
 	this.connect = function() {
 		return new sqlite3.Database(this.dbfile);
 	}
 }
+module.exports = new Database();
 
-// создание переменных
-var dataBase = new Database();
-
-module.exports = dataBase;
+var db = (new Database).connect();
 
 Database.prototype.initDB = function(cb) {
 	if (!fs.existsSync(dbfile)) {
 		logger.info("File", dbfile, "doesn't exist. Creating new.");
-		var db = (new Database()).connect();
 		db.serialize(function(exists) {
 			db.run("CREATE TABLE USERS (id INTEGER PRIMARY KEY ASC, name TEXT, login TEXT NOT NULL UNIQUE, password TEXT NOT NULL, email TEXT NOT NULL UNIQUE, admin INTEGER)", function(err, row) {
 				if (err) {
 			        logger.error("Init DB:",err);
-			        db.close();
 			    }
 			    else {
 			    	var query = "INSERT into USERS (name, login, password, email, admin) values (?, ?, ?, ?, ?)";
@@ -34,7 +29,6 @@ Database.prototype.initDB = function(cb) {
 							logger.error("Add admin:",err);
 						}
 						logger.info("Admin added. BD init");
-						db.close();
 					});
 			    }
 			});
@@ -59,34 +53,30 @@ createTableSchedule = function(db) {
 								UNIQUE(idRoom, date))", function(err, row) {
 		if (err) {
 	        logger.error("Create Table DATA:", err);
-	        db.close();
 	    }
 	    else {
 	    	logger.info("Create Table DATA");
-	    	db.close();
 	    }
 	});
 }
 
 // get all Lectors
-Database.prototype.getSchedule = function(user, cb) {	
+var getSchedule = function(user, cb) {	
 	var schedule = [];
 	var db = (new Database()).connect();
 	db.all("SELECT id, name, lastname, description FROM Schedule", function(err, rows) {
 	    if (err) {
-			db.close();
 	    	return cb(err);
 	    }
 	    rows.forEach(function (row) {
 	    	schedule.push(row);
 	    });
-	    db.close();
 	    return cb(schedule);
 	});
 }
 
 // добавление записи в Lections
-Database.prototype.addLection = function(item, cb) {
+var addLection = function(item, cb) {
 	var db = (new Database()).connect();
 	var query = "INSERT into Schedule (idLector, lectionName, idSchool, idRoom, date) values (?, ?, ?, ?, ?)";
 	db.run(query, [item.lector, item.lectionName, item.school, item.room, item.date], function(err, row) {
@@ -104,8 +94,7 @@ Database.prototype.addLection = function(item, cb) {
 }
 
 
-// get Lection
-Database.prototype.getLection = function(idUser, cb) {	
+var getLection = function(idUser, cb) {	
 	var items = [];
 	var db = (new Database()).connect();
 	db.all("select directory.name, directory.type, categories.name as name_cat from directory \
@@ -183,8 +172,7 @@ createTableClassrooms = function(db) {
 }
 
 // authorization
-Database.prototype.login = function(user, cb) {
-  var db = dataBase.connect();
+Database.prototype.login = function(user, cb) {  
   var query = "SELECT id, name, email, admin from USERS where (login = '" + user.login + "' or email = '" + user.login + "') and password = '" + user.password + "'";
   db.all(query, function(err, rows) {
     var res;
