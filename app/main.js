@@ -1,6 +1,6 @@
 var express = require('express'),
     http = require('http'),
-    Database = require('./db').Database,
+    database = require('./db').database,
     bodyParser= require('body-parser'),
     logger = require('winston'),
     session = require('express-session'),
@@ -11,8 +11,6 @@ var express = require('express'),
     School = require('./models/school');
 
 var Application = express();
-
-console.log(Database);
 
 var tsFormat = () => (new Date()).toLocaleTimeString();
 
@@ -79,14 +77,14 @@ Application.get('/login', function(req, res) {
 Application.post('/login', function(req, res) {
 	var user = req.body;
   var query = "SELECT id, name, email, admin from USERS where (login = '" + user.login + "' or email = '" + user.login + "') and password = '" + user.password + "'";
-  Database.all(query, function(err, rows) {
+  database.all(query, function(err, rows) {
     var result;
     var error;
     var selectedUser;
     if (err) {
       result = false;
       error = err;
-      logger.warn('Login as', login, '- FAIL: ', err);
+      logger.warn('Login as', user.login, '- FAIL: ', err);
     }
     if (rows && rows.length == 1) {
       result = true;
@@ -114,7 +112,7 @@ Application.post('/login', function(req, res) {
 // login = function(req, res) {  
 //   var user = req.body;
 //   var query = "SELECT id, name, email, admin from USERS where (login = '" + user.login + "' or email = '" + user.login + "') and password = '" + user.password + "'";
-//   Database.all(query, function(err, rows) {
+//   database.all(query, function(err, rows) {
 //     var res;
 //     var error;
 //     var selectedUser;
@@ -155,7 +153,7 @@ Application.get('/logout', function(req, res) {
 Application.post('/addLection', function(req, res) {
   if (req.session.user)
     {
-    Database.addLection(req.body, function(result) {
+    database.addLection(req.body, function(result) {
       res.send(result);
     });
   }
@@ -164,7 +162,7 @@ Application.post('/addLection', function(req, res) {
 Application.get('/getSchedule', function(req, res) {
   if (req.session.user)
     {
-    Database.getSchedule(req.body, function(result) {
+    database.getSchedule(req.body, function(result) {
       res.send(result);
     });
   }
@@ -207,7 +205,7 @@ Application.get('/getSchools', function(req, res) {
 Application.post('/addClassroom', function(req, res) {
   if (req.session.user)
     {
-    Database.add(req.body, function(result) {
+    database.add(req.body, function(result) {
       res.send(result);
     });
   }
@@ -216,7 +214,7 @@ Application.post('/addClassroom', function(req, res) {
 Application.get('/getClassrooms', function(req, res) {
   if (req.session.user)
     {
-    Database.getClassrooms(req.body, function(result) {
+    database.getClassrooms(req.body, function(result) {
       res.send(result);
     });
   }

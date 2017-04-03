@@ -1,8 +1,6 @@
 var logger = require('winston'),
-    Database = require('./../db').Database,
+    database = require('./../db').database,
 	Lector = require('../models/lector');
-
-var db = Database;
 
 // Routes
 module.exports = function(app) {
@@ -11,12 +9,13 @@ module.exports = function(app) {
     app.get('/getLectors', getAll); 
 };
 
+// Controlls
 add = function(req, res) {
     if (req.session.user) {
         var newLector = new Lector(req.body);
     	var query = "INSERT into Lectors (name, lastname, description) values (?, ?, ?)";
     	
-        db.run(query, [newLector.name, newLector.lastname, newLector.description], function(err, row) {
+        database.run(query, [newLector.name, newLector.lastname, newLector.description], function(err, row) {
             if (err) {
                 if (err.toString().indexOf('UNIQUE constraint failed') >= 0) {
             		logger.error("Такой лектор уже существует:", newLector.name, newLector.lastname)
@@ -36,7 +35,7 @@ remove = function(req, res) {
     var lector = new Lector(req.body);
 	var query = "DELETE FROM Lectors where id = " + lector.id ;
 	
-    db.run(query, function(err, row) {
+    database.run(query, function(err, row) {
         if (err) {
             logger.error(err);
             res.send(err);
@@ -51,7 +50,7 @@ remove = function(req, res) {
 getAll = function(req, res) {	
 	var lectors = [];
 	
-	db.all("SELECT id, name, lastname, description FROM Lectors", function(err, rows) {
+	database.all("SELECT id, name, lastname, description FROM Lectors", function(err, rows) {
 	    if (err) {
             logger.error(err);
 	    	res.send(err);
