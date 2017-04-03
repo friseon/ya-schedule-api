@@ -926,15 +926,15 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
             $stateProvider.state(admin);
 
             $stateProvider.state('admin.lectors', {
-                url: '?lectors',
+                url: '-lectors',
                 template: '<lector-add update="update"></lector-add><lectors-list lectors="lectors" update="update"></lectors-list>'
             })
             $stateProvider.state('admin.schools', {
-                url: '?schools',
+                url: '-schools',
                 template: '<schools schools="schools"></schools>'
             })
             $stateProvider.state('admin.class-rooms', {
-                url: '?class-rooms',
+                url: '-class-rooms',
                 template: '<class-rooms class-rooms="class-rooms"></class-rooms>'
             })
         }])

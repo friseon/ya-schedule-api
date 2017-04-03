@@ -56,7 +56,8 @@ Application.get('/admin', function(req, res) {
   }
 })
 
-Application.get('/admin/*', function(req, res) {
+Application.get(/admin/, function(req, res) {
+  console.log("admin sub")
   if (!req.session.user) {
     res.redirect('/login');
   }
@@ -66,7 +67,12 @@ Application.get('/admin/*', function(req, res) {
 })
 
 Application.get('/login', function(req, res) {
-	pages.home(req, res)
+  if (req.session.user) {
+    res.redirect('/admin');
+  }
+  else {
+    pages.home(req, res)
+  }	
 })
 
 Application.post('/login', function(req, res) {
