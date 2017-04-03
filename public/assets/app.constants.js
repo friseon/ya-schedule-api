@@ -1,8 +1,8 @@
 (function () {
     'use strict';
     angular
-        .module('budget')
-        .constant('budgetConstant', {
+        .module('schedule')
+        .constant('scheduleConstants', {
             months: [
             	{
 				   id: 1,

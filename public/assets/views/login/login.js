@@ -2,26 +2,15 @@
     'use strict';
 
     angular
-        .module('budget')
-        .config(['$stateProvider', function($stateProvider) {
-            var login = {
-                name: 'login',
-                url: '/login',
-                controller: 'loginCtrl',
-                controllerAs: 'model',
-                templateUrl: 'assets/views/login/login.tpl.html'
-            }
-
-            $stateProvider.state(login);
-        }])
+        .module('schedule')
         .controller('loginCtrl', loginCtrl);
 
         loginCtrl.$inject = [
-            '$scope', 'budgetService'
+            '$scope', 'scheduleService'
         ];
-        function loginCtrl($scope, budgetService) {
+
+        function loginCtrl($scope, scheduleService) {
         	var model = this;
-            console.log("login");
 
             model.user = {
                 login: "",
@@ -29,7 +18,7 @@
             }
 
             model.login = function (user) {
-                budgetService.login(user);
+                scheduleService.login(user);
             }
         }
 

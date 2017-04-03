@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('budget')
+        .module('schedule')
         .config(['$stateProvider', function($stateProvider) {
             var admin = {
                 name: 'admin',
@@ -30,20 +30,20 @@
         .controller('adminCtrl', adminCtrl);
 
         adminCtrl.$inject = [
-            '$scope', 'budgetService', 'adminService'
+            '$scope', 'scheduleService', 'adminService'
         ];
 
-        function adminCtrl($scope, budgetService, adminService) {
+        function adminCtrl($scope, scheduleService, adminService) {
         	var model = this;
 
             $scope.update = false;
 
             model.initTables = function() {
-                budgetService.initTables();
+                scheduleService.initTables();
             }
 
             model.logout = function() {
-                budgetService.logout();
+                scheduleService.logout();
             }
         }
 

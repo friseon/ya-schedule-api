@@ -1,4 +1,4 @@
-<span ng-if="model.isAdmin" ng-click="model.linkTo('home')">Расписание</span>
-<span ng-if="model.isAdmin" ng-click="model.linkTo('admin')">Управление</span>
+<span ng-click="model.linkTo('home')" ng-class="{'active': model.isActive('home')}">Расписание</span>
+<span ng-if="model.isAdmin" ng-click="model.linkTo('admin')" ng-class="{'active': model.isActive('admin')}">Управление</span>
 <button ng-if="model.isAdmin" ng-click="model.logout()">Выход</button>
-<span ng-if="!model.isAdmin" ng-click="model.linkTo('login')">Войти</span>
+<span ng-if="!model.isAdmin" ng-click="model.linkTo('login')" ng-class="{'active': model.isActive('login')}">Войти</span>

@@ -1,8 +1,8 @@
 (function () {
 	'use strict';
 	angular
-	    .module('budget')
-	    .service('budgetService', service)
+	    .module('schedule')
+	    .service('scheduleService', service)
 
 	service.$inject = ['$http', '$location', '$route'];
 
@@ -33,15 +33,9 @@
 
         function logout() {
             return $http.get('/logout').then(function(data) {
-                // $location.path('/login');
 
                 window.location = '/';
-                console.log(data)
-                $route.reload();
-                localStorage.removeItem('user.email');
-                localStorage.removeItem('user.id');
-                localStorage.removeItem('user.admin');
-                localStorage.removeItem('user.name');
+                localStorage.removeItem('user');
             }, function(err) {
                 console.log(err);
             })
@@ -50,10 +44,7 @@
         function login(user) {
             return $http.post('/login', user).then(function(result) {
                 if (result.data.user) {                    
-                    localStorage.setItem('user.email', result.data.user.email);
-                    localStorage.setItem('user.id', result.data.user.id);
-                    localStorage.setItem('user.admin', result.data.user.admin);
-                    localStorage.setItem('user.name', result.data.user.name);
+                    localStorage.setItem('user', result.data.user);
                     window.location = '/admin'
                 }
             }, function(err) {

@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('budget')
+        .module('schedule')
         .directive('mainHeader', mainHeader);
 
     function mainHeader() {
@@ -17,10 +17,10 @@
         };
 
         controller.$inject = [
-            '$scope', 'budgetService', '$http'
+            '$scope', 'scheduleService', '$http'
         ];
 
-        function controller($scope, budgetService, $http) {
+        function controller($scope, scheduleService, $http) {
         	var model = this;
             model.isAdmin = $scope.isAdmin;
 
@@ -30,8 +30,15 @@
                 }
             }
 
+            model.isActive = function(path) {
+                if (window.location.pathname.indexOf(path) > -1) {
+                    return true;
+                }
+                return false;
+            }
+
             model.logout = function() {
-                budgetService.logout();
+                scheduleService.logout();
             }
 
         }

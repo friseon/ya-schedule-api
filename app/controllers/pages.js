@@ -13,10 +13,3 @@ exports.admin = function (req, res) {
 		message: 'This is the Adminka!'
 	})
 }
-
-exports.login = function (req, res) {
-	return res.render('login', {
-		title: 'Login page',
-		message: req.message ? req.message : 'This is the Login'
-	})
-}

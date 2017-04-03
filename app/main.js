@@ -66,12 +66,7 @@ Application.get('/admin/*', function(req, res) {
 })
 
 Application.get('/login', function(req, res) {
-	if (req.session.user) {
-		res.redirect('/home');
-	}
-	else {    
-		pages.login(req, res)
-	}
+	pages.home(req, res)
 })
 
 Application.post('/login', function(req, res) {

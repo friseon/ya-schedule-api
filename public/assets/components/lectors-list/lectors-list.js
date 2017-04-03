@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('budget')
+        .module('schedule')
         .directive('lectorsList', lectorsList);
 
     function lectorsList() {

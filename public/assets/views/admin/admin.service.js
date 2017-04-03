@@ -1,7 +1,7 @@
 (function () {
 	'use strict';
 	angular
-	    .module('budget')
+	    .module('schedule')
 	    .service('adminService', service)
 
 	service.$inject = ['$http'];
