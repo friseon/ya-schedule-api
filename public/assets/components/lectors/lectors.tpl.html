@@ -1,0 +1,23 @@
+<h1>{{model.title}}</h1>
+<p>Фамилия:</p>
+<input type="text" ng-model="model.lector.lastname">
+<p>Имя:</p>
+<input type="text" ng-model="model.lector.name">
+<p>Общая информация:</p>
+<input type="text" ng-model="model.lector.description">
+<p ng-if="model.message">{{model.message}}</p>
+<hr>
+<button ng-if="!model.isSelect" ng-click="model.addLector(model.lector)" ng-disabled="!model.lector.name || !model.lector.lastname">Добавить</button>
+<button ng-if="model.isSelect" ng-click="model.update(model.lector)" ng-disabled="!model.lector.name || !model.lector.lastname">Сохранить</button>
+<button ng-if="model.isSelect" ng-click="model.cancel()">Отменить</button>
+<h4>Лекторы</h4>
+<table>
+	<tbody>
+		<tr ng-repeat="item in model.lectors">
+			<td>{{item.fullname}}</td>
+			<td>{{item.description}}</td>
+			<td><button ng-click="model.remove(item)">x</button></td>
+			<td><button ng-click="model.select(item)">s</button></td>
+		</tr>
+	</tbody>
+</table>

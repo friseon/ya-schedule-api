@@ -559,8 +559,8 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
     function service($http, $location, $route) {
     	var service = {
             login: login,
-            logout: logout,
-            getSchedule: getSchedule
+            getSchedule: getSchedule,
+            isLogin: isLogin
     	}
 
     	return service;
@@ -581,11 +581,10 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
             })
         }
 
-        function logout() {
-            return $http.get('/logout').then(function(data) {
-
-                window.location = '/';
-                localStorage.removeItem('user');
+        function isLogin() {
+            return $http.get('/isLogin').then(function(result) {
+                console.log(result)
+                return result;
             }, function(err) {
                 console.log(err);
             })

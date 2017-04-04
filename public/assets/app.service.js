@@ -9,8 +9,8 @@
     function service($http, $location, $route) {
     	var service = {
             login: login,
-            logout: logout,
-            getSchedule: getSchedule
+            getSchedule: getSchedule,
+            isLogin: isLogin
     	}
 
     	return service;
@@ -31,11 +31,10 @@
             })
         }
 
-        function logout() {
-            return $http.get('/logout').then(function(data) {
-
-                window.location = '/';
-                localStorage.removeItem('user');
+        function isLogin() {
+            return $http.get('/isLogin').then(function(result) {
+                console.log(result)
+                return result;
             }, function(err) {
                 console.log(err);
             })

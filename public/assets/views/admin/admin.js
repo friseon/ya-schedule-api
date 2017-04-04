@@ -7,16 +7,16 @@
             var admin = {
                 name: 'admin',
                 url: '/admin',
+                templateUrl: 'assets/views/admin/admin.tpl.html',
                 controller: 'adminCtrl',
-                controllerAs: 'model',
-                templateUrl: 'assets/views/admin/admin.tpl.html'
+                controllerAs: 'model'
             }
 
             $stateProvider.state(admin);
 
             $stateProvider.state('admin.lectors', {
                 url: '-lectors',
-                template: '<lector-add update="update"></lector-add><lectors-list lectors="lectors" update="update"></lectors-list>'
+                template: '<lectors></lectors>'
             })
             $stateProvider.state('admin.schools', {
                 url: '-schools',
@@ -30,17 +30,21 @@
         .controller('adminCtrl', adminCtrl);
 
         adminCtrl.$inject = [
-            '$scope', 'scheduleService', 'adminService'
+            '$scope', 'scheduleService', '$location'
         ];
 
-        function adminCtrl($scope, scheduleService, adminService) {
+        function adminCtrl($scope, scheduleService, $location) {
         	var model = this;
 
-            $scope.update = false;
+            $scope.$watch(function(){
+                return $location.path();
+            }, function(value){
+                if (value.indexOf('admin') > -1 && !localStorage.getItem("user")) {
+                    window.location = "/"
+                }
+            })
 
-            model.initTables = function() {
-                scheduleService.initTables();
-            }
+            $scope.update = false;
 
             model.logout = function() {
                 scheduleService.logout();

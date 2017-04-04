@@ -3,7 +3,7 @@
 var http = require('http'),
     express = require('express');
 
-var Application = require(__dirname + '/app');
+var Application = require(__dirname + '/app/app')
 var databaseParams = require(__dirname + '/app/db').databaseParams;
 
 var port = process.env.PORT || 9250;

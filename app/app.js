@@ -29,11 +29,11 @@ Application.use(session({
 }));
 
 Application.set('views', __dirname + "/views");
-Application.set('view engine', 'ejs')
-
-// Controllers/Routes
+Application.set('view engine', 'ejs');
 
 module.exports = Application;
+
+// Controllers/Routes
 
 require(__dirname + '/controllers/lectors')(Application);
 
@@ -45,6 +45,10 @@ Application.get('/', function(req, res) {
 Application.get('/home', function(req, res) {
   
   pages.home(req, res)
+})
+
+Application.get('/isLogin', function(req, res) {
+  res.send(!!req.session.user);
 })
 
 Application.get('/admin', function(req, res) {

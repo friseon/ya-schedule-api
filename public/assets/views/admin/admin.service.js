@@ -8,49 +8,22 @@
 
     function service($http) {
     	var service = {
-    		getLectors: getLectors,
-            addLector: addLector,
-            removeLector: removeLector,
             addSchool: addSchool,
             removeSchool: removeSchool,
-            getSchools: getSchools
+            getSchools: getSchools,
+            logout: logout
     	}
 
     	return service;
 
-        // Lectors
-
-        // добавление лектора
-        function addLector(lector) {
-            return $http.post('/addLector', lector).then(function(result) {
-                return result ? result.data : false;
+        function logout() {
+            return $http.get('/logout').then(function(data) {
+                window.location = '/';
+                localStorage.removeItem('user');
             }, function(err) {
                 console.log(err);
             })
         }
-
-        // удаление лектора
-        function removeLector(lector) {
-            return $http.post('/removeLector', lector).then(function(result) {
-                return result ? result.data : false;
-            }, function(err) {
-                console.log(err);
-            })
-        }
-
-        // получение всех лекторов
-    	function getLectors() {
-    		return $http.get('/getLectors').then(function(result) {
-    			if (result && result.data && !result.data.code) {
-    				return result.data;
-    			}
-    			else {
-    				return [];
-    			}
-    		}, function(err) {
-    			console.log(err);
-    		})
-    	}
 
         // Schools
 

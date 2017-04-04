@@ -5,6 +5,7 @@ var logger = require('winston'),
 // Routes
 module.exports = function(app) {
     app.post('/addLector', add);
+    app.post('/updateLector', update);
     app.post('/removeLector',remove);
     app.get('/getLectors', getAll); 
 };
@@ -25,6 +26,27 @@ add = function(req, res) {
             }
             else {
             	logger.info("Добавлен лектор:", newLector.name, newLector.lastname);
+                res.send(true);
+            }
+        })
+    }
+}
+
+update = function(req, res) {
+    if (req.session.user) {
+        var lector = new Lector(req.body);
+        var query = "UPDATE Lectors set (name, lastname, description) = (?, ?, ?) WHERE id = " + lector.id;
+        console.log(query)
+        database.run(query, [lector.name, lector.lastname, lector.description], function(err, row) {
+            if (err) {
+                if (err.toString().indexOf('UNIQUE constraint failed') >= 0) {
+                    logger.error("Такой лектор уже существует:", lector.name, lector.lastname)
+                    res.send({error: "Такой лектор уже существует"});
+                }
+                else logger.error(err);
+            }
+            else {
+                logger.info("Обновлен лектор:", lector.name, lector.lastname);
                 res.send(true);
             }
         })

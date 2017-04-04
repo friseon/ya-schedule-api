@@ -559,8 +559,8 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
     function service($http, $location, $route) {
     	var service = {
             login: login,
-            logout: logout,
-            getSchedule: getSchedule
+            getSchedule: getSchedule,
+            isLogin: isLogin
     	}
 
     	return service;
@@ -581,11 +581,10 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
             })
         }
 
-        function logout() {
-            return $http.get('/logout').then(function(data) {
-
-                window.location = '/';
-                localStorage.removeItem('user');
+        function isLogin() {
+            return $http.get('/isLogin').then(function(result) {
+                console.log(result)
+                return result;
             }, function(err) {
                 console.log(err);
             })
@@ -724,122 +723,8 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
 })()
 
 /***/ }),
-/* 8 */
-/***/ (function(module, exports) {
-
-(function () {
-    'use strict';
-
-    angular
-        .module('schedule')
-        .directive('lectorAdd', lectorAdd);
-
-    function lectorAdd() {
-    	return {
-            restrict: 'E',
-            controller: controller,
-            controllerAs: 'model',
-            scope: {
-                "update": "="
-            },
-            templateUrl: 'assets/components/lector-add/lector-add.tpl.html'
-        };
-
-        controller.$inject = [
-            '$scope', 'adminService'
-        ];
-
-        function controller($scope, adminService) {
-
-        	var model = this;
-
-            model.lector = {};
-            
-            // сообщение, если, например, такой лектор уже существует
-            model.message = "";
-
-            // добавление лектора
-            model.addLector = function(lector) {
-                adminService.addLector(lector).then(function(result) {
-                    if (result && result.error) {
-                        model.message = result.error;
-                    }
-                    else if (result === true){
-                        model.message = "";
-                        model.lector = {};
-                    }
-                });
-                $scope.update = true;
-            }
-
-        }
-    }
-
-})()
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports) {
-
-(function () {
-    'use strict';
-
-    angular
-        .module('schedule')
-        .directive('lectorsList', lectorsList);
-
-    function lectorsList() {
-    	return {
-            restrict: 'E',
-            controller: controller,
-            controllerAs: 'model',
-            scope: {
-                lectors: "=",
-                update: "="
-            },
-            templateUrl: 'assets/components/lectors-list/lectors-list.tpl.html'
-        };
-
-        controller.$inject = [
-            '$scope', 'adminService'
-        ];
-
-        function controller($scope, adminService) {
-
-        	var model = this;
-            model.lectors = $scope.lectors;
-
-            // следим за переменной, обновляем список при изменении данных
-            $scope.$watch('update', function(newV, oldV) {
-                if (newV !== oldV) 
-                {
-                    getLectors();
-                    $scope.update = false;
-                }                
-            })
-
-            // удаление лектора
-            model.remove = function(lector) {
-                adminService.removeLector(lector).then(function(result){
-                    $scope.update = result ? result : false;
-                });
-            }
-
-            // получение списка
-            var getLectors = function() {
-                adminService.getLectors().then(function(data){
-                    $scope.lectors = data;
-                });
-            }
-
-            getLectors();
-
-        }
-    }
-
-})()
-
-/***/ }),
+/* 8 */,
+/* 9 */,
 /* 10 */
 /***/ (function(module, exports) {
 
@@ -918,16 +803,16 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
             var admin = {
                 name: 'admin',
                 url: '/admin',
+                templateUrl: 'assets/views/admin/admin.tpl.html',
                 controller: 'adminCtrl',
-                controllerAs: 'model',
-                templateUrl: 'assets/views/admin/admin.tpl.html'
+                controllerAs: 'model'
             }
 
             $stateProvider.state(admin);
 
             $stateProvider.state('admin.lectors', {
                 url: '-lectors',
-                template: '<lector-add update="update"></lector-add><lectors-list lectors="lectors" update="update"></lectors-list>'
+                template: '<lectors></lectors>'
             })
             $stateProvider.state('admin.schools', {
                 url: '-schools',
@@ -941,17 +826,21 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
         .controller('adminCtrl', adminCtrl);
 
         adminCtrl.$inject = [
-            '$scope', 'scheduleService', 'adminService'
+            '$scope', 'scheduleService', '$location'
         ];
 
-        function adminCtrl($scope, scheduleService, adminService) {
+        function adminCtrl($scope, scheduleService, $location) {
         	var model = this;
 
-            $scope.update = false;
+            $scope.$watch(function(){
+                return $location.path();
+            }, function(value){
+                if (value.indexOf('admin') > -1 && !localStorage.getItem("user")) {
+                    window.location = "/"
+                }
+            })
 
-            model.initTables = function() {
-                scheduleService.initTables();
-            }
+            $scope.update = false;
 
             model.logout = function() {
                 scheduleService.logout();
@@ -974,49 +863,22 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
 
     function service($http) {
     	var service = {
-    		getLectors: getLectors,
-            addLector: addLector,
-            removeLector: removeLector,
             addSchool: addSchool,
             removeSchool: removeSchool,
-            getSchools: getSchools
+            getSchools: getSchools,
+            logout: logout
     	}
 
     	return service;
 
-        // Lectors
-
-        // добавление лектора
-        function addLector(lector) {
-            return $http.post('/addLector', lector).then(function(result) {
-                return result ? result.data : false;
+        function logout() {
+            return $http.get('/logout').then(function(data) {
+                window.location = '/';
+                localStorage.removeItem('user');
             }, function(err) {
                 console.log(err);
             })
         }
-
-        // удаление лектора
-        function removeLector(lector) {
-            return $http.post('/removeLector', lector).then(function(result) {
-                return result ? result.data : false;
-            }, function(err) {
-                console.log(err);
-            })
-        }
-
-        // получение всех лекторов
-    	function getLectors() {
-    		return $http.get('/getLectors').then(function(result) {
-    			if (result && result.data && !result.data.code) {
-    				return result.data;
-    			}
-    			else {
-    				return [];
-    			}
-    		}, function(err) {
-    			console.log(err);
-    		})
-    	}
 
         // Schools
 
@@ -1068,13 +930,188 @@ __webpack_require__(1);
 __webpack_require__(4);
 __webpack_require__(5);
 __webpack_require__(3);
-__webpack_require__(8);
-__webpack_require__(9);
+
+__webpack_require__(18);
+__webpack_require__(19);
+
 __webpack_require__(10);
 __webpack_require__(7);
 __webpack_require__(6);
 __webpack_require__(11);
 __webpack_require__(12);
+
+/***/ }),
+/* 16 */,
+/* 17 */,
+/* 18 */
+/***/ (function(module, exports) {
+
+(function () {
+    'use strict';
+
+    angular
+        .module('schedule')
+        .directive('lectors', lectors);
+
+    function lectors() {
+    	return {
+            restrict: 'E',
+            controller: controller,
+            controllerAs: 'model',
+            scope: { },
+            templateUrl: 'assets/components/lectors/lectors.tpl.html'
+        };
+
+        controller.$inject = [
+            '$scope', 'lectorsService'
+        ];
+
+        function controller($scope, lectorsService) {
+
+        	var model = this;
+
+            model.lector = {};
+            
+            // сообщение (например, такой лектор уже существует)
+            model.message = "";
+
+            model.lectors = [];
+
+            model.isSelect = false;
+
+            $scope.$watch('model.isSelect', function(newV, oldV) {
+                if (newV === false)
+                    model.title = "Добавление нового лектора";
+                else
+                    model.title = "Редактирование лектора";
+            })
+
+            // добавление лектора
+            model.addLector = function(lector) {
+                lectorsService.addLector(lector).then(function(result) {
+                    if (result && result.error) {
+                        model.message = result.error;
+                    }
+                    else if (result === true){
+                        model.message = "";
+                        model.lector = {};
+                    }
+                });
+                getLectors();
+            }
+
+            // удаление лектора
+            model.remove = function(lector) {
+                lectorsService.removeLector(lector).then(function(result){
+                    getLectors();
+                });
+            }
+
+            // выбрать лектора и включить режим редактирования
+            model.select = function(lector) {
+                model.lector = angular.copy(lector);
+                model.isSelect = true;
+            }
+
+            model.cancel =function() {
+                model.lector = {};
+                model.isSelect = false;
+            }
+
+            // редактировать лектора
+            model.update = function(lector) {
+                lectorsService.updateLector(lector).then(function(result){
+                    if (result && result.error) {
+                        model.message = result.error;
+                    }
+                    else if (result === true){
+                        model.message = "";
+                        model.lector = {};
+                        model.isSelect = false;
+                    }
+                });
+                getLectors();
+            }
+
+            // получение списка лекторов
+            var getLectors = function() {
+                lectorsService.getLectors().then(function(data){
+                    model.lectors = data;
+                });
+            }
+
+            getLectors();
+
+        }
+    }
+
+})()
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports) {
+
+(function () {
+	'use strict';
+	angular
+	    .module('schedule')
+	    .service('lectorsService', service)
+
+	service.$inject = ['$http'];
+
+    function service($http) {
+    	var service = {
+            addLector: addLector,
+            getLectors: getLectors,
+            updateLector: updateLector,
+            removeLector: removeLector,
+    	}
+
+    	return service;
+
+        // добавление лектора
+        function addLector(lector) {
+            return $http.post('/addLector', lector).then(function(result) {
+                return result ? result.data : false;
+            }, function(err) {
+                console.log(err);
+            })
+        }
+
+        // обновление лектора
+        function updateLector(lector) {
+            return $http.post('/updateLector', lector).then(function(result) {
+                return result ? result.data : false;
+            }, function(err) {
+                console.log(err);
+            })
+        }
+
+        // удаление лектора
+        function removeLector(lector) {
+            return $http.post('/removeLector', lector).then(function(result) {
+                return result ? result.data : false;
+            }, function(err) {
+                console.log(err);
+            })
+        }
+
+        // получение всех лекторов
+        function getLectors() {
+            return $http.get('/getLectors').then(function(result) {
+                if (result && result.data && !result.data.code) {
+                    return result.data;
+                }
+                else {
+                    return [];
+                }
+            }, function(err) {
+                console.log(err);
+            })
+        }
+    }
+    
+})()
 
 /***/ })
 /******/ ]);
