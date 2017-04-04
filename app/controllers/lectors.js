@@ -13,7 +13,7 @@ module.exports = function(app) {
 // Controlls
 add = function(req, res) {
     if (req.session.user) {
-        var newLector = new Lector(req.body);
+        var newLector = req.body;
     	var query = "INSERT into Lectors (name, lastname, description) values (?, ?, ?)";
     	
         database.run(query, [newLector.name, newLector.lastname, newLector.description], function(err, row) {
@@ -34,9 +34,8 @@ add = function(req, res) {
 
 update = function(req, res) {
     if (req.session.user) {
-        var lector = new Lector(req.body);
+        var lector = req.body;
         var query = "UPDATE Lectors set (name, lastname, description) = (?, ?, ?) WHERE id = " + lector.id;
-        console.log(query)
         database.run(query, [lector.name, lector.lastname, lector.description], function(err, row) {
             if (err) {
                 if (err.toString().indexOf('UNIQUE constraint failed') >= 0) {

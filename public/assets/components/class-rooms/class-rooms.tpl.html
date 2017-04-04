@@ -1,20 +1,24 @@
-<h1>Добавить новую аудиторию</h1>
+<h1>{{model.title}}</h1>
 <p>Наименование:</p>
 <input type="text" ng-model="model.room.name">
 <p>Вместимость:</p>
-<input type="text" ng-model="model.room.students">
+<input type="number" ng-model="model.room.capacity">
 <p>Описание:</p>
-<input type="text" ng-model="model.room.description">
+<textarea type="text" placeholder="Укажите расположение или любую другую важную информацию" ng-model="model.room.description" rows="4"></textarea>
 <p ng-if="model.message">{{model.message}}</p>
 <hr>
-<button ng-click="model.addClassRoom(model.room)" ng-disabled="!model.room.name || !model.room.students">Добавить</button>
+<button ng-if="!model.isSelect" ng-click="model.addClassRoom(model.room)" ng-disabled="!model.room.name || !model.room.capacity || !model.room.description">Добавить</button>
+<button ng-if="model.isSelect" ng-click="model.update(model.room)" ng-disabled="!model.room.name || !model.room.capacity || !model.room.description">Сохранить</button>
+<button ng-if="model.isSelect" ng-click="model.cancel()">Отменить</button>
 <h4>Аудитории</h4>
 <table>
 	<tbody>
-		<tr ng-repeat="room in rooms">
+		<tr ng-repeat="room in model.rooms">
 			<td>{{room.name}}</td>
-			<td>{{room.students}}</td>
+			<td>{{room.capacity}}</td>
+			<td>{{room.description}}</td>
 			<td><button ng-click="model.remove(room)">x</button></td>
+			<td><button ng-click="model.select(room)">редактировать</button></td>
 		</tr>
 	</tbody>
 </table>

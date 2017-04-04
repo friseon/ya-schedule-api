@@ -94,34 +94,32 @@ createTableLectors = function() {
 	});
 }
 
-// создание таблицы Schools
-createTableSchools = function() {
-	database.run("CREATE TABLE IF NOT EXISTS Schools (id INTEGER PRIMARY KEY ASC, \
-									name TEXT NOT NULL UNIQUE, \
-									students INTEGER NOT NULL)", function(err, row) {
-		if (err) {
-	        logger.error("Create Table Schools:", err);
-	    }
-	    else {
-	    	logger.info("Created Table Schools");
-	    }
-	});
-}
-
 // создание таблицы Classrooms
 createTableClassrooms = function() {
 	database.run("CREATE TABLE IF NOT EXISTS Classrooms (id INTEGER PRIMARY KEY ASC, \
-									name TEXT NOT NULL, \
-									number INTEGER NOT NULL, \
-									address TEXT NOT NULL, \
+									name TEXT NOT NULL UNIQUE, \
 									capacity INTEGER NOT NULL, \
-									description TEXT, \
-									UNIQUE(name, number))", function(err, row) {
+									description TEXT NOT NULL)", function(err, row) {
 		if (err) {
 	        logger.error("Create Table Classrooms:", err);
 	    }
 	    else {
 	    	logger.info("Created Table Classrooms");
+	    }
+	});
+}
+
+// создание таблицы Schools
+createTableSchools = function() {
+	database.run("CREATE TABLE IF NOT EXISTS Schools (id INTEGER PRIMARY KEY ASC, \
+									name TEXT NOT NULL, \
+									students INTEGER NOT NULL, \
+									UNIQUE(name))", function(err, row) {
+		if (err) {
+	        logger.error("Create Table Schools:", err);
+	    }
+	    else {
+	    	logger.info("Created Table Schools");
 	    }
 	});
 }

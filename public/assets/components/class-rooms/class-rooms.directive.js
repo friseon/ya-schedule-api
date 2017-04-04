@@ -10,46 +10,80 @@
             restrict: 'E',
             controller: controller,
             controllerAs: 'model',
-            scope: {
-                classRooms: "="
-            },
+            scope: { },
             templateUrl: 'assets/components/class-rooms/class-rooms.tpl.html'
         };
 
         controller.$inject = [
-            '$scope', 'adminService'
+            '$scope', 'classRoomsService'
         ];
 
-        function controller($scope, adminService) {
+        function controller($scope, classRoomsService) {
 
             var model = this;
-            model.room = $scope.room;
 
-            // добавление школы
+            model.room = {};
+
+            model.isSelect = false;
+
+            $scope.$watch('model.isSelect', function(newV, oldV) {
+                if (newV === false)
+                    model.title = "Добавление новой аудитории";
+                else
+                    model.title = "Редактирование аудитории";
+            })
+
+            // добавление аудитории
             model.addClassRoom = function(room) {
-                adminService.addClassRoom(room).then(function(result) {
+                classRoomsService.addClassRoom(room).then(function(result) {
                     if (result && result.error) {
                         model.message = result.error;
                     }
                     else if (result === true) {
                         model.message = "";
                         model.room = {};
-                        getClassRooms();
                     }
                 });
+                getClassRooms();
             }
 
-            // удаление школы
+            // удаление аудитории
             model.remove = function(room) {
-                adminService.removeClassRoom(room).then(function(result){
+                classRoomsService.removeClassRoom(room).then(function(result){
                      getClassRooms();
                 });
             }
 
-            // получение списка
+            // выбрать аудиторию и включить режим редактирования
+            model.select = function(room) {
+                model.room = angular.copy(room);
+                model.isSelect = true;
+            }
+
+            model.cancel =function() {
+                model.room = {};
+                model.isSelect = false;
+            }
+
+            // редактировать аудиторию
+            model.update = function(room) {
+                classRoomsService.updateClassRoom(room).then(function(result){
+                    if (result && result.error) {
+                        model.message = result.error;
+                    }
+                    else if (result === true){
+                        model.message = "";
+                        model.room = {};
+                        model.isSelect = false;
+                    }
+                });
+                getClassRooms();
+            }
+
+            // получение списка аудиторий
             var getClassRooms = function() {
-                adminService.getClassRooms().then(function(data){
-                    $scope.rooms = data;
+                classRoomsService.getClassRooms().then(function(data){
+                    model.rooms = data;
                 });
             }
 

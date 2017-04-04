@@ -36,6 +36,7 @@ module.exports = Application;
 // Controllers/Routes
 
 require(__dirname + '/controllers/lectors')(Application);
+require(__dirname + '/controllers/classRooms')(Application);
 
 
 Application.get('/', function(req, res) {
@@ -61,7 +62,6 @@ Application.get('/admin', function(req, res) {
 })
 
 Application.get(/admin/, function(req, res) {
-  console.log("admin sub")
   if (!req.session.user) {
     res.redirect('/login');
   }
@@ -112,39 +112,6 @@ Application.post('/login', function(req, res) {
     res.send(resultData);
   });
 })
-
-// // authorization
-// login = function(req, res) {  
-//   var user = req.body;
-//   var query = "SELECT id, name, email, admin from USERS where (login = '" + user.login + "' or email = '" + user.login + "') and password = '" + user.password + "'";
-//   database.all(query, function(err, rows) {
-//     var res;
-//     var error;
-//     var selectedUser;
-//     if (err) {
-//       res = false;
-//       error = err;
-//       logger.warn('Login as', login, '- FAIL: ', err);
-//     }
-//     if (rows && rows.length == 1) {
-//       res = true;
-//       selectedUser = rows[0];
-//       logger.info('Login as',  user.login, 'success');
-//       req.session.user = result.user;
-//       res.redirect('/admin');
-//     } else {
-//       res = false;
-//       error = "Неверный логин или пароль";
-//       logger.warn('Login as',  user.login, '- FAIL: Wrong login or password');
-//     }
-//     var result = {
-//       'result': res,
-//       'message': error,
-//       'user': selectedUser
-//     }
-//     res.send(result);
-//   });
-// }
 
 Application.get('/logout', function(req, res) {
 	logger.info("Logout user", req.session.user);
@@ -205,27 +172,6 @@ Application.get('/getSchools', function(req, res) {
 })
 
 // /Schools
-// Classroom
-
-Application.post('/addClassroom', function(req, res) {
-  if (req.session.user)
-    {
-    database.add(req.body, function(result) {
-      res.send(result);
-    });
-  }
-})
-
-Application.get('/getClassrooms', function(req, res) {
-  if (req.session.user)
-    {
-    database.getClassrooms(req.body, function(result) {
-      res.send(result);
-    });
-  }
-})
-
-// /Classroom
 
 Application.get('*', function(req, res) {
   res.send("Page not found");

@@ -672,46 +672,80 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
             restrict: 'E',
             controller: controller,
             controllerAs: 'model',
-            scope: {
-                classRooms: "="
-            },
+            scope: { },
             templateUrl: 'assets/components/class-rooms/class-rooms.tpl.html'
         };
 
         controller.$inject = [
-            '$scope', 'adminService'
+            '$scope', 'classRoomsService'
         ];
 
-        function controller($scope, adminService) {
+        function controller($scope, classRoomsService) {
 
             var model = this;
-            model.room = $scope.room;
 
-            // добавление школы
+            model.room = {};
+
+            model.isSelect = false;
+
+            $scope.$watch('model.isSelect', function(newV, oldV) {
+                if (newV === false)
+                    model.title = "Добавление новой аудитории";
+                else
+                    model.title = "Редактирование аудитории";
+            })
+
+            // добавление аудитории
             model.addClassRoom = function(room) {
-                adminService.addClassRoom(room).then(function(result) {
+                classRoomsService.addClassRoom(room).then(function(result) {
                     if (result && result.error) {
                         model.message = result.error;
                     }
                     else if (result === true) {
                         model.message = "";
                         model.room = {};
-                        getClassRooms();
                     }
                 });
+                getClassRooms();
             }
 
-            // удаление школы
+            // удаление аудитории
             model.remove = function(room) {
-                adminService.removeClassRoom(room).then(function(result){
+                classRoomsService.removeClassRoom(room).then(function(result){
                      getClassRooms();
                 });
             }
 
-            // получение списка
+            // выбрать аудиторию и включить режим редактирования
+            model.select = function(room) {
+                model.room = angular.copy(room);
+                model.isSelect = true;
+            }
+
+            model.cancel =function() {
+                model.room = {};
+                model.isSelect = false;
+            }
+
+            // редактировать аудиторию
+            model.update = function(room) {
+                classRoomsService.updateClassRoom(room).then(function(result){
+                    if (result && result.error) {
+                        model.message = result.error;
+                    }
+                    else if (result === true){
+                        model.message = "";
+                        model.room = {};
+                        model.isSelect = false;
+                    }
+                });
+                getClassRooms();
+            }
+
+            // получение списка аудиторий
             var getClassRooms = function() {
-                adminService.getClassRooms().then(function(data){
-                    $scope.rooms = data;
+                classRoomsService.getClassRooms().then(function(data){
+                    model.rooms = data;
                 });
             }
 
@@ -931,11 +965,14 @@ __webpack_require__(4);
 __webpack_require__(5);
 __webpack_require__(3);
 
-__webpack_require__(18);
+__webpack_require__(20);
 __webpack_require__(19);
 
 __webpack_require__(10);
+
 __webpack_require__(7);
+__webpack_require__(21);
+
 __webpack_require__(6);
 __webpack_require__(11);
 __webpack_require__(12);
@@ -943,7 +980,74 @@ __webpack_require__(12);
 /***/ }),
 /* 16 */,
 /* 17 */,
-/* 18 */
+/* 18 */,
+/* 19 */
+/***/ (function(module, exports) {
+
+(function () {
+	'use strict';
+	angular
+	    .module('schedule')
+	    .service('lectorsService', service)
+
+	service.$inject = ['$http'];
+
+    function service($http) {
+    	var service = {
+            addLector: addLector,
+            getLectors: getLectors,
+            updateLector: updateLector,
+            removeLector: removeLector,
+    	}
+
+    	return service;
+
+        // добавление лектора
+        function addLector(lector) {
+            return $http.post('/addLector', lector).then(function(result) {
+                return result ? result.data : false;
+            }, function(err) {
+                console.log(err);
+            })
+        }
+
+        // обновление лектора
+        function updateLector(lector) {
+            return $http.post('/updateLector', lector).then(function(result) {
+                return result ? result.data : false;
+            }, function(err) {
+                console.log(err);
+            })
+        }
+
+        // удаление лектора
+        function removeLector(lector) {
+            return $http.post('/removeLector', lector).then(function(result) {
+                return result ? result.data : false;
+            }, function(err) {
+                console.log(err);
+            })
+        }
+
+        // получение всех лекторов
+        function getLectors() {
+            return $http.get('/getLectors').then(function(result) {
+                if (result && result.data && !result.data.code) {
+                    return result.data;
+                }
+                else {
+                    return [];
+                }
+            }, function(err) {
+                console.log(err);
+            })
+        }
+    }
+    
+})()
+
+/***/ }),
+/* 20 */
 /***/ (function(module, exports) {
 
 (function () {
@@ -1048,57 +1152,58 @@ __webpack_require__(12);
 })()
 
 /***/ }),
-/* 19 */
+/* 21 */
 /***/ (function(module, exports) {
 
 (function () {
 	'use strict';
 	angular
 	    .module('schedule')
-	    .service('lectorsService', service)
+	    .service('classRoomsService', service)
 
 	service.$inject = ['$http'];
 
     function service($http) {
     	var service = {
-            addLector: addLector,
-            getLectors: getLectors,
-            updateLector: updateLector,
-            removeLector: removeLector,
+            addClassRoom: addClassRoom,
+            getClassRooms: getClassRooms,
+            updateClassRoom: updateClassRoom,
+            removeClassRoom: removeClassRoom,
     	}
 
     	return service;
 
-        // добавление лектора
-        function addLector(lector) {
-            return $http.post('/addLector', lector).then(function(result) {
+        // добавление аудитории
+        function addClassRoom(classRoom) {
+            return $http.post('/addClassRoom', classRoom).then(function(result) {
                 return result ? result.data : false;
             }, function(err) {
                 console.log(err);
             })
         }
 
-        // обновление лектора
-        function updateLector(lector) {
-            return $http.post('/updateLector', lector).then(function(result) {
+        // обновление аудитории
+        function updateClassRoom(classRoom) {
+            return $http.post('/updateClassRoom', classRoom).then(function(result) {
                 return result ? result.data : false;
             }, function(err) {
                 console.log(err);
             })
         }
 
-        // удаление лектора
-        function removeLector(lector) {
-            return $http.post('/removeLector', lector).then(function(result) {
+        // удаление аудитории
+        function removeClassRoom(classRoom) {
+            return $http.post('/removeClassRoom', classRoom).then(function(result) {
                 return result ? result.data : false;
             }, function(err) {
                 console.log(err);
             })
         }
 
-        // получение всех лекторов
-        function getLectors() {
-            return $http.get('/getLectors').then(function(result) {
+        // получение всех аудиторий
+        function getClassRooms() {
+            return $http.get('/getClassRooms').then(function(result) {
+                console.log(result)
                 if (result && result.data && !result.data.code) {
                     return result.data;
                 }
