@@ -15,6 +15,9 @@ require('./public/assets/components/schools/schools.service');
 require('./public/assets/components/class-rooms/class-rooms.directive');
 require('./public/assets/components/class-rooms/class-rooms.service');
 
+require('./public/assets/components/schedule/schedule.directive');
+require('./public/assets/components/schedule/schedule.service');
+
 require('./public/assets/components/main-header/main-header.directive');
 require('./public/assets/views/admin/admin');
 require('./public/assets/views/admin/admin.service');

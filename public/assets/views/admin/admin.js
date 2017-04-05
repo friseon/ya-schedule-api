@@ -14,6 +14,10 @@
 
             $stateProvider.state(admin);
 
+            $stateProvider.state('admin.schedule', {
+                url: '-schedule',
+                template: '<schedule></schedule>'
+            })
             $stateProvider.state('admin.lectors', {
                 url: '-lectors',
                 template: '<lectors></lectors>'

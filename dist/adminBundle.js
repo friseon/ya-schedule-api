@@ -1182,6 +1182,10 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
 
             $stateProvider.state(admin);
 
+            $stateProvider.state('admin.schedule', {
+                url: '-schedule',
+                template: '<schedule></schedule>'
+            })
             $stateProvider.state('admin.lectors', {
                 url: '-lectors',
                 template: '<lectors></lectors>'
@@ -1273,9 +1277,208 @@ __webpack_require__(12);
 __webpack_require__(7);
 __webpack_require__(8);
 
+__webpack_require__(19);
+__webpack_require__(20);
+
 __webpack_require__(6);
 __webpack_require__(13);
 __webpack_require__(14);
+
+/***/ }),
+/* 18 */,
+/* 19 */
+/***/ (function(module, exports) {
+
+(function () {
+    'use strict';
+
+    angular
+        .module('schedule')
+        .directive('schedule', schedule);
+
+    function schedule() {
+        return {
+            restrict: 'E',
+            controller: controller,
+            controllerAs: 'model',
+            scope: { },
+            templateUrl: 'assets/components/schedule/schedule.tpl.html'
+        };
+
+        controller.$inject = [
+            '$scope', 'scheduleService', 'schoolsService', 'lectorsService', 'classRoomsService'
+        ];
+
+        function controller($scope, scheduleService, schoolsService, lectorsService, classRoomsService) {
+
+            var model = this;
+            model.schedule = [];
+
+            model.isSelect = false;
+
+            model.message = "";
+
+            $scope.$watch('model.isSelect', function(newV, oldV) {
+                if (newV === false)
+                    model.title = "Добавление новой школы";
+                else
+                    model.title = "Редактирование школы";
+            })
+
+            // добавление школы
+            model.addLecture = function(lecture) {
+                scheduleService.addLecture(lecture).then(function(result) {
+                    if (result && result.error) {
+                        model.message = result.error;
+                    }
+                    else if (result === true) {
+                        model.message = "";
+                        model.lecture = {};
+                        getSchedule();
+                    }
+                });
+            }
+
+            // удаление школы
+            model.remove = function(lecture) {
+                scheduleService.removeLecture(lecture).then(function(result) {
+                    getSchedule();
+                });
+            }
+
+            // выбрать лекцию и включить режим редактирования
+            model.select = function(lecture) {
+                model.lecture = angular.copy(lecture);
+                model.isSelect = true;
+            }
+
+            model.cancel =function() {
+                model.lecture = {};
+                model.isSelect = false;
+            }
+
+            // редактировать лекцию
+            model.update = function(lecture) {
+                scheduleService.updateLecture(lecture).then(function(result){
+                    if (result && result.error) {
+                        model.message = result.error;
+                    }
+                    else if (result === true){
+                        model.message = "";
+                        model.lecture = {};
+                        model.isSelect = false;
+                    }
+                });
+                getSchedule();
+            }
+
+            // получение расписания
+            var getSchedule = function() {
+                scheduleService.getSchedule().then(function(data){
+                    model.schedule = data;
+                });
+            }
+
+            // получение школ
+            var getSchools = function() {
+                schoolsService.getSchools().then(function(data){
+                    model.schools = data;
+                });
+            }
+
+            // получение лекторов
+            var getLectors = function() {
+                lectorsService.getLectors().then(function(data){
+                    model.lectors = data;
+                });
+            }
+
+            // получение аудиториц
+            var getRooms = function() {
+                classRoomsService.getClassRooms().then(function(data){
+                    model.rooms = data;
+                });
+            }
+
+            getLectors();
+
+            getRooms();
+
+            getSchools();
+
+            getSchedule();
+
+        }
+    }
+
+})()
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports) {
+
+(function () {
+	'use strict';
+	angular
+	    .module('schedule')
+	    .service('scheduleService', service)
+
+	service.$inject = ['$http'];
+
+    function service($http) {
+    	var service = {
+            addLecture: addLecture,
+            getSchedule: getSchedule,
+            updateLecture: updateLecture,
+            removeLecture: removeLecture,
+    	}
+
+    	return service;
+
+        // добавление лекции
+        function addLecture(school) {
+            console.log(school)
+            return $http.post('/addLecture', school).then(function(result) {
+                return result ? result.data : false;
+            }, function(err) {
+                console.log(err);
+            })
+        }
+
+        // обновление лекции
+        function updateLecture(school) {
+            return $http.post('/updateLecture', school).then(function(result) {
+                return result ? result.data : false;
+            }, function(err) {
+                console.log(err);
+            })
+        }
+
+        // удаление лекции
+        function removeLecture(school) {
+            return $http.post('/removeLecture', school).then(function(result) {
+                return result ? result.data : false;
+            }, function(err) {
+                console.log(err);
+            })
+        }
+
+        // получение всех лекций
+        function getSchedule() {
+            return $http.get('/getSchedule').then(function(result) {
+                if (result && result.data && !result.data.code) {
+                    return result.data;
+                }
+                else {
+                    return [];
+                }
+            }, function(err) {
+                console.log(err);
+            })
+        }
+    }
+    
+})()
 
 /***/ })
 /******/ ]);

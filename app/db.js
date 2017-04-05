@@ -64,7 +64,7 @@ exports.databaseParams = new DatabaseParams(initDB);
 createTableSchedule = function() {
 	database.run("CREATE TABLE IF NOT EXISTS Schedule ( id INTEGER PRIMARY KEY ASC, \
 								idLector INTEGER NOT NULL, \
-								lectionName TEXT NOT NULL, \
+								name TEXT NOT NULL, \
 								idSchool INTEGER NOT NULL, \
 								idRoom INTEGER NOT NULL, \
 								date TEXT NOT NULL, \

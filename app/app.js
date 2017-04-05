@@ -37,6 +37,7 @@ require(__dirname + '/controllers/authentication')(Application);
 require(__dirname + '/controllers/lectors')(Application);
 require(__dirname + '/controllers/classRooms')(Application);
 require(__dirname + '/controllers/schools')(Application);
+require(__dirname + '/controllers/schedule')(Application);
 
 Application.get('/', function(req, res) {
   res.redirect('/home');
@@ -50,14 +51,14 @@ Application.get('/isLogin', function(req, res) {
   res.send(!!req.session.user);
 })
 
-Application.get('/admin', function(req, res) {
-  if (!req.session.user) {
-    res.redirect('/login');
-  }
-  else {;
-    pages.admin(req, res)
-  }
-})
+// Application.get('/admin', function(req, res) {
+//   if (!req.session.user) {
+//     res.redirect('/login');
+//   }
+//   else {;
+//     pages.admin(req, res)
+//   }
+// })
 
 Application.get(/admin/, function(req, res) {
   if (!req.session.user) {
@@ -76,29 +77,6 @@ Application.get('/login', function(req, res) {
     pages.home(req, res)
   }	
 })
-
-
-// Schedule
-
-Application.post('/addLection', function(req, res) {
-  if (req.session.user)
-    {
-    database.addLection(req.body, function(result) {
-      res.send(result);
-    });
-  }
-})
-
-Application.get('/getSchedule', function(req, res) {
-  if (req.session.user)
-    {
-    database.getSchedule(req.body, function(result) {
-      res.send(result);
-    });
-  }
-})
-
-// /Schedule
 
 Application.get('*', function(req, res) {
   res.send("Page not found");
