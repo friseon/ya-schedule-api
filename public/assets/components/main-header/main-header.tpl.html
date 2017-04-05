@@ -1,4 +1,4 @@
-<span ng-click="model.linkTo('home')" ng-class="{'active': model.isActive('home')}">Расписание</span>
-<span ng-if="model.isLogin" ng-click="model.linkTo('admin')" ng-class="{'active': model.isActive('admin')}">Управление</span>
-<button ng-if="model.isLogin" ng-click="model.logout()">Выход</button>
-<span ng-if="!model.isLogin" ng-click="model.linkTo('login')" ng-class="{'active': model.isActive('login')}">Войти</span>
+<button class="btn btn-primary btn-lg" ng-click="model.linkTo('home')" ng-class="{'active': model.isActive('home')}">Расписание</button>
+<button class="btn btn-primary btn-lg" ng-if="model.isLogin" ng-click="model.linkTo('admin')" ng-class="{'active': model.isActive('admin')}">Управление</button>
+<button class="btn btn-success btn-lg" ng-if="model.isLogin" ng-click="model.logout()">Выход</button>
+<button class="btn btn-success btn-lg" ng-if="!model.isLogin" ng-click="model.linkTo('login')" ng-class="{'active': model.isActive('login')}">Войти</button>

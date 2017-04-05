@@ -6,10 +6,10 @@
         .controller('loginCtrl', loginCtrl);
 
         loginCtrl.$inject = [
-            '$scope', 'scheduleService'
+            '$scope', 'appService'
         ];
 
-        function loginCtrl($scope, scheduleService) {
+        function loginCtrl($scope, appService) {
         	var model = this;
 
             model.user = {
@@ -18,7 +18,7 @@
             }
 
             model.login = function (user) {
-                scheduleService.login(user);
+                appService.login(user);
             }
         }
 

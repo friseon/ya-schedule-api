@@ -6,15 +6,17 @@
         .controller('homeCtrl', homeCtrl);
 
         homeCtrl.$inject = [
-            '$scope', 'scheduleService'
+            '$scope', 'appService'
         ];
 
-        function homeCtrl($scope, scheduleService) {
+        function homeCtrl($scope, appService) {
         	var model = this;
-            console.log("home")
+
+            model.schedule = [];
+
             var getSchedule = function() {
-                scheduleService.getSchedule().then(function(data) {
-                    console.log(data);
+                appService.getSchedule().then(function(data) {
+                    model.schedule = data;
                 });
             }
 

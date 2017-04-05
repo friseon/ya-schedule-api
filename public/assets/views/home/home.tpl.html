@@ -1,1 +1,24 @@
 <h2>Расписание</h2>
+<table class="table">
+	<thead ng-if="model.schedule">
+		<tr>
+			<th>Название лекции</th>
+			<th>Лектор</th>
+			<th>Школа</th>
+			<th>Аудитория</th>
+			<th>Дата</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="lecture in model.schedule">
+			<td>{{lecture.name}}</td>
+			<td>{{lecture.lector}}</td>
+			<td>{{lecture.school}}</td>
+			<td>{{lecture.room}}</td>
+			<td>{{lecture.date}}</td>
+		</tr>
+		<tr ng-if="!model.schedule">
+			<td colspan="5">Лекций нет</td>
+		</tr>
+	</tbody>
+</table>

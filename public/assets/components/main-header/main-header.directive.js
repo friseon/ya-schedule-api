@@ -19,11 +19,12 @@ import "./main-header.scss";
         };
 
         controller.$inject = [
-            '$scope', 'scheduleService', '$http'
+            '$scope', 'appService'
         ];
 
-        function controller($scope, scheduleService, $http) {
+        function controller($scope, appService) {
         	var model = this;
+
             model.isLogin = $scope.isLogin;
 
             model.linkTo = function(path) {
@@ -40,7 +41,7 @@ import "./main-header.scss";
             }
 
             model.logout = function() {
-                scheduleService.logout();
+                appService.logout();
             }
 
         }

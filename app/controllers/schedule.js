@@ -91,27 +91,25 @@ var removeLecture = function(req, res) {
 }
 
 var getSchedule = function(req, res) {
-    if (req.session.user) {
-    	var lectures = [];
-    	database.all("SELECT schedule.id, schedule.name, (lectors.lastname || ' ' || lectors.name) as lector, schools.name as school, Classrooms.name as room, schedule.date FROM Schedule \
-                      left join lectors \
-                      on schedule.idLector = lectors.id \
-                      left join schools \
-                      on schedule.idSchool = schools.id \
-                      left join Classrooms \
-                      on schedule.idRoom = Classrooms.id \
-                      ORDER BY schedule.date ASC", function(err, rows) {
-    	    if (err) {
-                logger.error("GET ALL FROM Schedule", err)
-    	    	res.send({error: "Ошибка сервера. Выполнить операцию не удалось."});
-    	    }
-            else {
-                rows.forEach(function (row) {
-                    lecture = row;
-                    lectures.push(lecture);
-                });
-                res.send(lectures);
-            }
-    	});
-    }
+	var lectures = [];
+	database.all("SELECT schedule.id, schedule.name, (lectors.lastname || ' ' || lectors.name) as lector, schools.name as school, Classrooms.name as room, schedule.date FROM Schedule \
+                  left join lectors \
+                  on schedule.idLector = lectors.id \
+                  left join schools \
+                  on schedule.idSchool = schools.id \
+                  left join Classrooms \
+                  on schedule.idRoom = Classrooms.id \
+                  ORDER BY schedule.date ASC", function(err, rows) {
+	    if (err) {
+            logger.error("GET ALL FROM Schedule", err)
+	    	res.send({error: "Ошибка сервера. Выполнить операцию не удалось."});
+	    }
+        else {
+            rows.forEach(function (row) {
+                lecture = row;
+                lectures.push(lecture);
+            });
+            res.send(lectures);
+        }
+	});
 }

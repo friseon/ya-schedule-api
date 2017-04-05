@@ -2,15 +2,16 @@
 	'use strict';
 	angular
 	    .module('schedule')
-	    .service('scheduleService', service)
+	    .service('appService', service)
 
-	service.$inject = ['$http', '$location', '$route'];
+	service.$inject = ['$http'];
 
-    function service($http, $location, $route) {
+    function service($http) {
     	var service = {
             login: login,
             getSchedule: getSchedule,
-            isLogin: isLogin
+            isLogin: isLogin,
+            logout: logout
     	}
 
     	return service;
@@ -29,7 +30,7 @@
             }, function(err) {
                 console.log(err);
             })
-        }
+        };
 
         function isLogin() {
             return $http.get('/isLogin').then(function(result) {
@@ -38,7 +39,7 @@
             }, function(err) {
                 console.log(err);
             })
-        }
+        };
 
         function login(user) {
             return $http.post('/login', user).then(function(result) {
@@ -49,7 +50,17 @@
             }, function(err) {
                 console.log(err);
             })
-        }
+        };
+
+        function logout() {
+            console.log("!");
+            return $http.post('/logout').then(function(data) {
+                window.location = '/';
+                localStorage.removeItem('user');
+            }, function(err) {
+                console.log(err);
+            })
+        };
     }
     
 })()
