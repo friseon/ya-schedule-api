@@ -1,18 +1,21 @@
-<h1>Добавить новую школу</h1>
+<h1>{{model.title}}</h1>
 <p>Наименование:</p>
 <input type="text" ng-model="model.school.name">
 <p>Кол-во студентов:</p>
-<input type="text" ng-model="model.school.students">
+<input type="number" ng-model="model.school.students">
 <p ng-if="model.message">{{model.message}}</p>
 <hr>
-<button ng-click="model.addSchool(model.school)" ng-disabled="!model.school.name || !model.school.students">Добавить</button>
+<button ng-if="!model.isSelect" ng-click="model.addSchool(model.school)" ng-disabled="!model.school.name || !model.school.students">Добавить</button>
+<button ng-if="model.isSelect" ng-click="model.update(model.school)" ng-disabled="!model.school.name || !model.school.students">Сохранить</button>
+<button ng-if="model.isSelect" ng-click="model.cancel()">Отменить</button>
 <h4>Школы</h4>
 <table>
 	<tbody>
-		<tr ng-repeat="item in schools">
-			<td>{{item.name}}</td>
-			<td>{{item.students}}</td>
-			<td><button ng-click="model.remove(item)">x</button></td>
+		<tr ng-repeat="school in model.schools">
+			<td>{{school.name}}</td>
+			<td>{{school.students}}</td>
+			<td><button ng-click="model.remove(school)">x</button></td>
+			<td><button ng-click="model.select(school)">редактировать</button></td>
 		</tr>
 	</tbody>
 </table>

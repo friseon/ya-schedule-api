@@ -15,14 +15,14 @@ initDB = function() {
 	database.serialize(function() {
 		database.all("SELECT name FROM sqlite_master WHERE type='table' AND name='USERS'", function(err, rows) {
 			if (!rows.length){
-				database.run("CREATE TABLE IF NOT EXISTS USERS (id INTEGER PRIMARY KEY ASC, name TEXT, login TEXT NOT NULL UNIQUE, password TEXT NOT NULL, email TEXT NOT NULL UNIQUE, admin INTEGER)", function(err, row) {
+				database.run("CREATE TABLE IF NOT EXISTS USERS (id INTEGER PRIMARY KEY ASC, name TEXT, login TEXT NOT NULL UNIQUE, password TEXT NOT NULL, email TEXT NOT NULL UNIQUE)", function(err, row) {
 					if (err) {
 				        logger.error("Create Table USERS:",err);
 				    }
 				    else {
 				    	logger.info("Created Table USERS");
-				    	var query = "INSERT into USERS (name, login, password, email, admin) values (?, ?, ?, ?, ?)";
-				    	database.run(query, ["admin", "admin", "qwe123", "frise.on@gmail.com", 1], function(err, rows) {
+				    	var query = "INSERT into USERS (name, login, password, email) values (?, ?, ?, ?)";
+				    	database.run(query, ["admin", "admin", "qwe123", "admin@ya.com"], function(err, rows) {
 							if (err) {
 								logger.error("Add admin:",err);
 							}

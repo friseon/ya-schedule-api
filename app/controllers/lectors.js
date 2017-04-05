@@ -4,14 +4,14 @@ var logger = require('winston'),
 
 // Routes
 module.exports = function(app) {
-    app.post('/addLector', add);
-    app.post('/updateLector', update);
-    app.post('/removeLector',remove);
-    app.get('/getLectors', getAll); 
+    app.post('/addLector', addLector);
+    app.post('/updateLector', updateLector);
+    app.post('/removeLector', removeLector);
+    app.get('/getLectors', getLectors); 
 };
 
 // Controlls
-add = function(req, res) {
+var addLector = function(req, res) {
     if (req.session.user) {
         var newLector = req.body;
     	var query = "INSERT into Lectors (name, lastname, description) values (?, ?, ?)";
@@ -22,7 +22,10 @@ add = function(req, res) {
             		logger.error("Такой лектор уже существует:", newLector.name, newLector.lastname)
                 	res.send({error: "Такой лектор уже существует"});
                 }
-                else logger.error(err);
+                else {
+                    logger.error(query, ":", err);
+                    res.send({error: "Ошибка сервера. Выполнить операцию не удалось."});
+                }
             }
             else {
             	logger.info("Добавлен лектор:", newLector.name, newLector.lastname);
@@ -32,7 +35,7 @@ add = function(req, res) {
     }
 }
 
-update = function(req, res) {
+var updateLector = function(req, res) {
     if (req.session.user) {
         var lector = req.body;
         var query = "UPDATE Lectors set (name, lastname, description) = (?, ?, ?) WHERE id = " + lector.id;
@@ -42,7 +45,10 @@ update = function(req, res) {
                     logger.error("Такой лектор уже существует:", lector.name, lector.lastname)
                     res.send({error: "Такой лектор уже существует"});
                 }
-                else logger.error(err);
+                else {
+                    logger.error(query, ":", err);
+                    res.send({error: "Ошибка сервера. Выполнить операцию не удалось."});
+                }
             }
             else {
                 logger.info("Обновлен лектор:", lector.name, lector.lastname);
@@ -52,35 +58,41 @@ update = function(req, res) {
     }
 }
 
-remove = function(req, res) {
-    var lector = new Lector(req.body);
-	var query = "DELETE FROM Lectors where id = " + lector.id ;
-	
-    database.run(query, function(err, row) {
-        if (err) {
-            logger.error(err);
-            res.send(err);
-        }
-        else {
-        	logger.info("Удален лектор:", lector.name, lector.lastname);
-        }
-        res.send(true);
-    })
+var removeLector = function(req, res) {
+    if (req.session.user) {
+        var lector = req.body;
+    	var query = "DELETE FROM Lectors where id = " + lector.id ;
+    	
+        database.run(query, function(err, row) {
+            if (err) {
+                logger.error(query, ":", err);
+                res.send({error: "Ошибка сервера. Выполнить операцию не удалось."});
+            }
+            else {
+            	logger.info("Удален лектор:", lector.name, lector.lastname);
+                res.send(true);
+            }
+        })
+    }
 }
 
-getAll = function(req, res) {	
-	var lectors = [];
-	
-	database.all("SELECT id, name, lastname, description FROM Lectors", function(err, rows) {
-	    if (err) {
-            logger.error(err);
-	    	res.send(err);
-	    }
-	    rows.forEach(function (row) {
-	    	lector = new Lector(row);
-	    	lector.fullname = lector.fullname();
-	    	lectors.push(lector);
-	    });
-	    res.send(lectors);
-	});
+var getLectors = function(req, res) {
+    if (req.session.user) {	
+    	var lectors = [];
+    	
+    	database.all("SELECT id, name, lastname, description FROM Lectors", function(err, rows) {
+    	    if (err) {
+                logger.error("GET ALL FROM Lectors", err);
+    	    	res.send({error: "Ошибка сервера. Выполнить операцию не удалось."});
+    	    }
+            else {
+                rows.forEach(function (row) {
+                    lector = new Lector(row);
+                    lector.fullname = lector.fullname();
+                    lectors.push(lector);
+                });
+                res.send(lectors);
+            }
+    	});
+    }
 }

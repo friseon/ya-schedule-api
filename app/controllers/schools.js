@@ -1,54 +1,93 @@
-var logger = require('winston');
+var logger = require('winston'),
+    database = require('./../db').database,
+    School = require('../models/school');
 
-exports.add = function(newSchool, db, cb) {
-	var query = "INSERT into Schools (name, students) values (?, ?)";
-	db = db.connect();
-    db.run(query, [newSchool.name, newSchool.students], function(err, row) {
-        if (err) {
-            if (err.toString().indexOf('UNIQUE constraint failed') >= 0) {
-        		db.close();
-        		logger.error("Такая школа уже существует:", newSchool.name)
-            	return cb({error: "Такая школа уже существует"});
+// Routes
+module.exports = function(app) {
+    app.post('/addSchool', addSchool);
+    app.post('/updateSchool', updateSchool);
+    app.post('/removeSchool', removeSchool);
+    app.get('/getSchools', getSchools); 
+};
+
+var addSchool = function(req, res) {
+    if (req.session.user) {
+        var newSchool = req.body;
+    	var query = "INSERT into Schools (name, students) values (?, ?)";
+        database.run(query, [newSchool.name, newSchool.students], function(err, row) {
+            if (err) {
+                if (err.toString().indexOf('UNIQUE constraint failed') >= 0) {
+            		logger.error("Такая школа уже существует:", newSchool.name)
+                	res.send({error: "Такая школа уже существует"});
+                }
+                else {
+                    logger.error(query, ":", err);
+                    res.send({error: "Ошибка сервера. Выполнить операцию не удалось."});
+                }
             }
-            else logger.error(err);
-        }
-        else {
-        	logger.info("Добавлена школа:", newSchool.name);
-        }
-        db.close();
-        return cb(true);
-    })
+            else {
+            	logger.info("Добавлена школа:", newSchool.name);
+                res.send(true);
+            }
+        })
+    }
 }
 
-exports.remove = function(school, db, cb) {
-	var query = "DELETE FROM Schools where id = " + school.id ;
-	db = db.connect();
-    db.run(query, function(err, row) {
-        if (err) {
-            logger.error(err);
-            return cb(err);
-        }
-        else {
-        	logger.info("Удалена школа:", school.name, school.lastname);
-        }
-        db.close();
-        return cb(true);
-    })
+var updateSchool = function(req, res) {
+    if (req.session.user) {
+        var school = req.body;
+        var query = "UPDATE Schools set (name, students) = (?, ?) WHERE id = " + school.id;
+        database.run(query, [school.name, school.students], function(err, row) {
+            if (err) {
+                if (err.toString().indexOf('UNIQUE constraint failed') >= 0) {
+                    logger.error("Такая школа уже существует:", school.name)
+                    res.send({error: "Такая школа уже существует"});
+                }
+                else {
+                    logger.error(query, ":", err);
+                    res.send({error: "Ошибка сервера. Выполнить операцию не удалось."});
+                }
+            }
+            else {
+                logger.info("Обновлена школа:", school.name);
+                res.send(true);
+            }
+        })
+    }
 }
 
-exports.getSchools = function(db, cb) {	
-	var schools = [];
-	db = db.connect();
-	db.all("SELECT id, name, students FROM Schools", function(err, rows) {
-	    if (err) {
-			db.close();
-	    	return err;
-	    }
-	    rows.forEach(function (row) {
-	    	school = new School(row);
-	    	schools.push(school);
-	    });
-	    db.close();
-	    return cb(schools);
-	});
+var removeSchool = function(req, res) {
+    if (req.session.user) {
+        var school = req.body;
+    	var query = "DELETE FROM Schools where id = " + school.id ;
+        database.run(query, function(err, row) {
+            if (err) {
+                logger.error(query, ":", err);                
+                res.send({error: "Ошибка сервера. Выполнить операцию не удалось."});
+            }
+            else {
+            	logger.info("Удалена школа:", school.name);
+                res.send(true);
+            }
+        })
+    }
+}
+
+var getSchools = function(req, res) {
+    if (req.session.user) {
+    	var schools = [];
+    	database.all("SELECT id, name, students FROM Schools", function(err, rows) {
+    	    if (err) {
+                logger.error("GET ALL FROM Schools", err)
+    	    	res.send({error: "Ошибка сервера. Выполнить операцию не удалось."});
+    	    }
+            else {
+                rows.forEach(function (row) {
+                    school = new School(row);
+                    schools.push(school);
+                });
+                res.send(schools);
+            }
+    	});
+    }
 }

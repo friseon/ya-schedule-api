@@ -44,8 +44,6 @@
                 }
             })
 
-            $scope.update = false;
-
             model.logout = function() {
                 scheduleService.logout();
             }

@@ -46,7 +46,6 @@
         // получение всех аудиторий
         function getClassRooms() {
             return $http.get('/getClassRooms').then(function(result) {
-                console.log(result)
                 if (result && result.data && !result.data.code) {
                     return result.data;
                 }

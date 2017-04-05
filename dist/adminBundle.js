@@ -774,24 +774,33 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
             restrict: 'E',
             controller: controller,
             controllerAs: 'model',
-            scope: {
-                schools: "="
-            },
+            scope: { },
             templateUrl: 'assets/components/schools/schools.tpl.html'
         };
 
         controller.$inject = [
-            '$scope', 'adminService'
+            '$scope', 'schoolsService'
         ];
 
-        function controller($scope, adminService) {
+        function controller($scope, schoolsService) {
 
             var model = this;
-            model.schools = $scope.schools;
+            model.schools = [];
+
+            model.isSelect = false;
+
+            model.message = "";
+
+            $scope.$watch('model.isSelect', function(newV, oldV) {
+                if (newV === false)
+                    model.title = "Добавление новой школы";
+                else
+                    model.title = "Редактирование школы";
+            })
 
             // добавление школы
             model.addSchool = function(school) {
-                adminService.addSchool(school).then(function(result) {
+                schoolsService.addSchool(school).then(function(result) {
                     if (result && result.error) {
                         model.message = result.error;
                     }
@@ -805,15 +814,41 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
 
             // удаление школы
             model.remove = function(school) {
-                adminService.removeSchool(school).then(function(result){
-                     getSchools();
+                schoolsService.removeSchool(school).then(function(result) {
+                    getSchools();
                 });
+            }
+
+            // выбрать школу и включить режим редактирования
+            model.select = function(school) {
+                model.school = angular.copy(school);
+                model.isSelect = true;
+            }
+
+            model.cancel =function() {
+                model.school = {};
+                model.isSelect = false;
+            }
+
+            // редактировать школу
+            model.update = function(school) {
+                schoolsService.updateSchool(school).then(function(result){
+                    if (result && result.error) {
+                        model.message = result.error;
+                    }
+                    else if (result === true){
+                        model.message = "";
+                        model.school = {};
+                        model.isSelect = false;
+                    }
+                });
+                getSchools();
             }
 
             // получение списка
             var getSchools = function() {
-                adminService.getSchools().then(function(data){
-                    $scope.schools = data;
+                schoolsService.getSchools().then(function(data){
+                    model.schools = data;
                 });
             }
 
@@ -874,8 +909,6 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
                 }
             })
 
-            $scope.update = false;
-
             model.logout = function() {
                 scheduleService.logout();
             }
@@ -897,9 +930,6 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
 
     function service($http) {
     	var service = {
-            addSchool: addSchool,
-            removeSchool: removeSchool,
-            getSchools: getSchools,
             logout: logout
     	}
 
@@ -909,40 +939,6 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
             return $http.get('/logout').then(function(data) {
                 window.location = '/';
                 localStorage.removeItem('user');
-            }, function(err) {
-                console.log(err);
-            })
-        }
-
-        // Schools
-
-        // добавление школы
-        function addSchool(schoold) {
-            return $http.post('/addSchool', schoold).then(function(result) {
-                return result ? result.data : false;
-            }, function(err) {
-                console.log(err);
-            })
-        }
-
-        // удаление школы
-        function removeSchool(schoold) {
-            return $http.post('/removeSchool', schoold).then(function(result) {
-                return result ? result.data : false;
-            }, function(err) {
-                console.log(err);
-            })
-        }
-
-        // получение всех школ
-        function getSchools() {
-            return $http.get('/getSchools').then(function(result) {
-                if (result && result.data && !result.data.code) {
-                    return result.data;
-                }
-                else {
-                    return [];
-                }
             }, function(err) {
                 console.log(err);
             })
@@ -969,6 +965,7 @@ __webpack_require__(20);
 __webpack_require__(19);
 
 __webpack_require__(10);
+__webpack_require__(22);
 
 __webpack_require__(7);
 __webpack_require__(21);
@@ -1203,7 +1200,73 @@ __webpack_require__(12);
         // получение всех аудиторий
         function getClassRooms() {
             return $http.get('/getClassRooms').then(function(result) {
-                console.log(result)
+                if (result && result.data && !result.data.code) {
+                    return result.data;
+                }
+                else {
+                    return [];
+                }
+            }, function(err) {
+                console.log(err);
+            })
+        }
+    }
+    
+})()
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports) {
+
+(function () {
+	'use strict';
+	angular
+	    .module('schedule')
+	    .service('schoolsService', service)
+
+	service.$inject = ['$http'];
+
+    function service($http) {
+    	var service = {
+            addSchool: addSchool,
+            getSchools: getSchools,
+            updateSchool: updateSchool,
+            removeSchool: removeSchool,
+    	}
+
+    	return service;
+
+        // добавление школы
+        function addSchool(school) {
+            console.log(school)
+            return $http.post('/addSchool', school).then(function(result) {
+                return result ? result.data : false;
+            }, function(err) {
+                console.log(err);
+            })
+        }
+
+        // обновление школы
+        function updateSchool(school) {
+            return $http.post('/updateSchool', school).then(function(result) {
+                return result ? result.data : false;
+            }, function(err) {
+                console.log(err);
+            })
+        }
+
+        // удаление школы
+        function removeSchool(school) {
+            return $http.post('/removeSchool', school).then(function(result) {
+                return result ? result.data : false;
+            }, function(err) {
+                console.log(err);
+            })
+        }
+
+        // получение всех школ
+        function getSchools() {
+            return $http.get('/getSchools').then(function(result) {
                 if (result && result.data && !result.data.code) {
                     return result.data;
                 }
