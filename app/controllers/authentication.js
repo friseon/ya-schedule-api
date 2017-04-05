@@ -11,7 +11,7 @@ module.exports = function(app) {
 
 login = function(req, res) {
 	var user = req.body;
-	var query = "SELECT id, name, email, admin from USERS where (login = '" + user.login + "' or email = '" + user.login + "') and password = '" + user.password + "'";
+	var query = "SELECT id, name, email from USERS where (login = '" + user.login + "' or email = '" + user.login + "') and password = '" + user.password + "'";
 	database.all(query, function(err, rows) {
 	    var result;
 	    var error;

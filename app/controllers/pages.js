@@ -1,7 +1,7 @@
 exports.home = function (req, res) {
 	res.render('home', {
 		title: 'Home page',
-		isAdmin: req.session ? !!req.session.user : false,
+		isLogin: req.session ? !!req.session.user : false,
 		message: 'This is the Home'
 	})
 }
@@ -9,7 +9,7 @@ exports.home = function (req, res) {
 exports.admin = function (req, res) {
 	res.render('admin', {
 		title: 'Admin page',
-		isAdmin: req.session.user.admin,
+		isLogin: req.session ? !!req.session.user : false,
 		message: 'This is the Adminka!'
 	})
 }

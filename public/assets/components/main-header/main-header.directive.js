@@ -11,7 +11,7 @@
             controller: controller,
             controllerAs: 'model',
             scope: {
-                isAdmin: '='
+                isLogin: '='
             },
             templateUrl: 'assets/components/main-header/main-header.tpl.html'
         };
@@ -22,7 +22,7 @@
 
         function controller($scope, scheduleService, $http) {
         	var model = this;
-            model.isAdmin = $scope.isAdmin;
+            model.isLogin = $scope.isLogin;
 
             model.linkTo = function(path) {
                 if (window.location.pathname !== '/' + path) {
