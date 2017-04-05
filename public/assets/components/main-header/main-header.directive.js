@@ -1,3 +1,5 @@
+import "./main-header.scss";
+
 (function () {
     'use strict';
 

@@ -16,22 +16,54 @@ module.exports = {
     filename: "[name].js"
   },
   module: {
-      loaders: [
-          {
-              test: /\.scss$/,
-              loader: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader!resolve-url!sass-loader?sourceMap' })
-          },
-          {
-              test: /\.css$/,
-              loader: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader' })
-          },
-          {
-              test: /\.woff2?$|\.ttf$|\.eot$|\.svg$|\.png|\.jpe?g|\.gif$/,
-              loader: 'file-loader'
-          }
+      rules: [
+        {
+          test: /\.css$/,
+          use: ExtractTextPlugin.extract({ fallback: 'style-loader', use: ['css-loader','postcss-loader'] })
+          // use: [
+          //   'style-loader',
+          //   {
+          //     loader: 'css-loader',
+          //     options: {
+          //       sourceMap: true,
+          //       importLoaders: 1
+          //     }
+          //   },
+          //   {
+          //       loader: 'postcss-loader',
+          //       options: {
+          //           sourceMap: 'inline',
+          //       }
+          //   },
+          //   {
+          //       loader: "sass-loader" // compiles Sass to CSS
+          //   }
+          // ]
+        },
+        {
+            test: /\.scss$/,
+            use: ExtractTextPlugin.extract({ fallback: 'style-loader', use: ['css-loader','postcss-loader','sass-loader'] })
+        },        
+        // { test: /\.woff2?$|\.ttf$|\.eot$|\.svg$|\.png|\.jpe?g|\.gif$/, loader: 'file?name=[path][name].[ext]' },
+        // {
+        //     test: /\.woff2?$|\.ttf$|\.eot$|\.svg$|\.png|\.jpe?g|\.gif$/,
+        //     loader: 'file-loader'
+        // },
+        {
+          test: /\.woff2?$|\.ttf$|\.eot$/,
+          loader: "file-loader?name=/fonts/[name].[ext]"
+        },
+        {
+          test: /\.svg$|\.png|\.jpe?g|\.gif$/,
+          loader: "file-loader?name=/img/[name].[ext]"
+        }
       ]
   },
   plugins: [
-      new ExtractTextPlugin({ filename: 'css/[name].css', disable: false, allChunks: true })
+        new ExtractTextPlugin({
+          filename: 'index.css',
+          disable: false,
+          allChunks: true
+        })
   ]
 }

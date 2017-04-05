@@ -26,3 +26,6 @@ require('./public/assets/components/schedule/schedule.directive');
 require('./public/assets/components/schedule/schedule.service');
 
 require('./public/assets/components/main-header/main-header.directive');
+
+import styles from './node_modules/angular-ui-bootstrap/dist/ui-bootstrap-csp.css';
+import styles from './node_modules/bootstrap/dist/css/bootstrap.css';
