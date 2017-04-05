@@ -20,35 +20,11 @@ module.exports = {
         {
           test: /\.css$/,
           use: ExtractTextPlugin.extract({ fallback: 'style-loader', use: ['css-loader','postcss-loader'] })
-          // use: [
-          //   'style-loader',
-          //   {
-          //     loader: 'css-loader',
-          //     options: {
-          //       sourceMap: true,
-          //       importLoaders: 1
-          //     }
-          //   },
-          //   {
-          //       loader: 'postcss-loader',
-          //       options: {
-          //           sourceMap: 'inline',
-          //       }
-          //   },
-          //   {
-          //       loader: "sass-loader" // compiles Sass to CSS
-          //   }
-          // ]
         },
         {
             test: /\.scss$/,
             use: ExtractTextPlugin.extract({ fallback: 'style-loader', use: ['css-loader','postcss-loader','sass-loader'] })
-        },        
-        // { test: /\.woff2?$|\.ttf$|\.eot$|\.svg$|\.png|\.jpe?g|\.gif$/, loader: 'file?name=[path][name].[ext]' },
-        // {
-        //     test: /\.woff2?$|\.ttf$|\.eot$|\.svg$|\.png|\.jpe?g|\.gif$/,
-        //     loader: 'file-loader'
-        // },
+        }, 
         {
           test: /\.woff2?$|\.ttf$|\.eot$/,
           loader: "file-loader?name=/fonts/[name].[ext]"
