@@ -6,6 +6,7 @@ var logger = require('winston'),
 module.exports = function(app) {
     app.post('/addLecture', addLecture);
     app.post('/updateLecture', updateLecture);
+    app.get('/lecture/:id', getLecture);
     app.post('/removeLecture', removeLecture);
     app.get('/getSchedule', getSchedule); 
 };
@@ -30,6 +31,22 @@ var addLecture = function(req, res) {
                 res.send(true);
             }
         })
+    }
+}
+
+var getLecture = function(req, res) {
+    if (req.session.user) {
+        var id = req.params.id;
+        console.log(id);
+        database.all("SELECT id, name, idLector, idSchool, idRoom, date FROM Schedule WHERE id = " + id, function(err, rows) {
+            if (err) {
+                logger.error("GET Lecture FROM Schedule", err)
+                res.send({error: "Ошибка сервера. Выполнить операцию не удалось."});
+            }
+            else if (rows) {
+                res.send(rows[0]);
+            }
+        });
     }
 }
 
@@ -76,20 +93,21 @@ var removeLecture = function(req, res) {
 var getSchedule = function(req, res) {
     if (req.session.user) {
     	var lectures = [];
-    	database.all("SELECT schedule.id, schedule.name, lectors.name as lector, schools.name as school, Classrooms.name as room, schedule.date FROM Schedule \
+    	database.all("SELECT schedule.id, schedule.name, (lectors.lastname || ' ' || lectors.name) as lector, schools.name as school, Classrooms.name as room, schedule.date FROM Schedule \
                       left join lectors \
                       on schedule.idLector = lectors.id \
                       left join schools \
                       on schedule.idSchool = schools.id \
                       left join Classrooms \
-                      on schedule.idRoom = Classrooms.id", function(err, rows) {
+                      on schedule.idRoom = Classrooms.id \
+                      ORDER BY schedule.date ASC", function(err, rows) {
     	    if (err) {
                 logger.error("GET ALL FROM Schedule", err)
     	    	res.send({error: "Ошибка сервера. Выполнить операцию не удалось."});
     	    }
             else {
                 rows.forEach(function (row) {
-                    lecture = new Lecture(row);
+                    lecture = row;
                     lectures.push(lecture);
                 });
                 res.send(lectures);

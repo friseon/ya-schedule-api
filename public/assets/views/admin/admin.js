@@ -3,16 +3,7 @@
 
     angular
         .module('schedule')
-        .config(['$stateProvider', function($stateProvider) {
-            var admin = {
-                name: 'admin',
-                url: '/admin',
-                templateUrl: 'assets/views/admin/admin.tpl.html',
-                controller: 'adminCtrl',
-                controllerAs: 'model'
-            }
-
-            $stateProvider.state(admin);
+        .config(['$stateProvider', function($stateProvider) {            
 
             $stateProvider.state('admin.schedule', {
                 url: '-schedule',
@@ -34,10 +25,10 @@
         .controller('adminCtrl', adminCtrl);
 
         adminCtrl.$inject = [
-            '$scope', 'scheduleService', '$location'
+            '$scope', 'adminService', '$location'
         ];
 
-        function adminCtrl($scope, scheduleService, $location) {
+        function adminCtrl($scope, adminService, $location) {
         	var model = this;
 
             $scope.$watch(function(){
@@ -49,7 +40,7 @@
             })
 
             model.logout = function() {
-                scheduleService.logout();
+                adminService.logout();
             }
         }
 

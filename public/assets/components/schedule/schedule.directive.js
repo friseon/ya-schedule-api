@@ -29,12 +29,20 @@
 
             $scope.$watch('model.isSelect', function(newV, oldV) {
                 if (newV === false)
-                    model.title = "Добавление новой школы";
+                    model.title = "Добавление новой лекции";
                 else
-                    model.title = "Редактирование школы";
+                    model.title = "Редактирование лекции";
             })
 
-            // добавление школы
+            $scope.open2 = function() {
+                $scope.popup2.opened = true;
+            };
+
+            $scope.popup2 = {
+                opened: false
+            };
+
+            // добавление лекции
             model.addLecture = function(lecture) {
                 scheduleService.addLecture(lecture).then(function(result) {
                     if (result && result.error) {
@@ -48,7 +56,21 @@
                 });
             }
 
-            // удаление школы
+            // получение лекции
+            var getLecture = function(id) {
+                scheduleService.getLecture(id).then(function(result) {
+                    console.log(result);
+                    if (result && result.error) {
+                        model.message = result.error;
+                    }
+                    else if (result) {
+                        model.message = "";
+                        model.lecture = result;
+                    }
+                });
+            }
+
+            // удаление лекции
             model.remove = function(lecture) {
                 scheduleService.removeLecture(lecture).then(function(result) {
                     getSchedule();
@@ -57,7 +79,7 @@
 
             // выбрать лекцию и включить режим редактирования
             model.select = function(lecture) {
-                model.lecture = angular.copy(lecture);
+                model.lecture = getLecture(lecture.id);
                 model.isSelect = true;
             }
 

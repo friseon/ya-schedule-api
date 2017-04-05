@@ -14,7 +14,13 @@
 	<option ng-repeat="room in model.rooms" value="{{room.id}}">{{room.name}}</option>
 </select>
 <p>Дата:</p>
-<input type="text" ng-model="model.lecture.date">
+<input type="text" ng-model="model.lecture.date" mask="dd.MM.yyyy">
+<p class="input-group">
+  <input type="text" class="form-control" uib-datepicker-popup ng-model="dt" is-open="popup2.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+  <span class="input-group-btn">
+    <button type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
+  </span>
+</p>
 
 <p ng-if="model.message">{{model.message}}</p>
 
@@ -28,7 +34,10 @@
 	<tbody>
 		<tr ng-repeat="lecture in model.schedule">
 			<td>{{lecture.name}}</td>
-			<td>{{lecture.lecture}}</td>
+			<td>{{lecture.lector}}</td>
+			<td>{{lecture.school}}</td>
+			<td>{{lecture.room}}</td>
+			<td>{{lecture.date}}</td>
 			<td><button ng-click="model.remove(lecture)">x</button></td>
 			<td><button ng-click="model.select(lecture)">редактировать</button></td>
 		</tr>

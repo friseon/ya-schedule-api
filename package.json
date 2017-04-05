@@ -24,9 +24,17 @@
     "winston": "^2.3.1"
   },
   "devDependencies": {
+    "angular-datepicker": "^1.0.5",
+    "angular-ui-bootstrap": "^2.5.0",
+    "css-loader": "^0.28.0",
+    "extract-text-webpack-plugin": "^2.1.0",
     "mocha": "1.7.0",
+    "node-sass": "^4.5.2",
+    "npm": "^4.4.4",
+    "sass-loader": "^6.0.3",
     "should": "1.2.1",
+    "style-loader": "^0.16.1",
     "supertest": "0.4.0",
-    "webpack": "^2.3.2"
+    "webpack": "^2.3.3"
   }
 }

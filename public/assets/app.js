@@ -1,7 +1,7 @@
 (function () {
 	'use strict';
 	angular
-	    .module('schedule', ["ngRoute", "ui.router"])
+	    .module('schedule', ["ngRoute", "ui.router", "ui.bootstrap"])
 	    .config(function($locationProvider) {
 	        $locationProvider
 	            .html5Mode({
@@ -26,6 +26,16 @@
                 controllerAs: 'model',
                 templateUrl: 'assets/views/login/login.tpl.html'
             }
+
+            var admin = {
+                name: 'admin',
+                url: '/admin',
+                templateUrl: 'assets/views/admin/admin.tpl.html',
+                controller: 'adminCtrl',
+                controllerAs: 'model'
+            }
+
+            $stateProvider.state(admin);
 
             $stateProvider.state(login);
             

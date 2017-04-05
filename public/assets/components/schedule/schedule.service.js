@@ -12,14 +12,27 @@
             getSchedule: getSchedule,
             updateLecture: updateLecture,
             removeLecture: removeLecture,
+            getLecture: getLecture
     	}
 
     	return service;
 
         // добавление лекции
-        function addLecture(school) {
-            console.log(school)
-            return $http.post('/addLecture', school).then(function(result) {
+        function addLecture(lecture) {
+            return $http.post('/addLecture', lecture).then(function(result) {
+                return result ? result.data : false;
+            }, function(err) {
+                console.log(err);
+            })
+        }
+
+        // получение лекции
+        function getLecture(id) {
+            return $http.get('/lecture/' + id, {
+                params: {
+                    id: id
+                }
+            }).then(function(result) {
                 return result ? result.data : false;
             }, function(err) {
                 console.log(err);
@@ -27,8 +40,8 @@
         }
 
         // обновление лекции
-        function updateLecture(school) {
-            return $http.post('/updateLecture', school).then(function(result) {
+        function updateLecture(lecture) {
+            return $http.post('/updateLecture', lecture).then(function(result) {
                 return result ? result.data : false;
             }, function(err) {
                 console.log(err);
@@ -36,8 +49,8 @@
         }
 
         // удаление лекции
-        function removeLecture(school) {
-            return $http.post('/removeLecture', school).then(function(result) {
+        function removeLecture(lecture) {
+            return $http.post('/removeLecture', lecture).then(function(result) {
                 return result ? result.data : false;
             }, function(err) {
                 console.log(err);
