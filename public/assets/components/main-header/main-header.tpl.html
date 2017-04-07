@@ -8,12 +8,14 @@
 				<li class="navbar-btn" ng-if="model.isLogin" ng-click="model.linkTo('admin')" ng-class="{'active': model.isActive('admin')}">
 					<span>Управление</span>
 				</li>
+				<li class="navbar-btn" ng-if="!model.isLogin" ng-click="model.linkTo('login')" ng-class="{'active': model.isActive('login')}">
+					<span>Вход</span>
+				</li>
 			</ul>
 		</div>
 		<div class="collapse navbar-collapse">
 			<p class="navbar-text navbar-right">
 				<span class="navbar-link" ng-if="model.isLogin" ng-click="model.logout()">Выход</span>
-				<span class="navbar-link" ng-if="!model.isLogin" ng-click="model.linkTo('login')" ng-class="{'active': model.isActive('login')}">Войти</span>
 			</p>
 		</div>
 	</div>
