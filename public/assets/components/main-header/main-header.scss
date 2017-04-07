@@ -4,3 +4,25 @@ body {
 	background-color: $bgc;
 	margin: 0
 }
+
+.nav {
+	> li {
+		&.active {
+			> *,
+			> *:hover,
+			> *:focus {
+				color: #fff;
+    			background-color: #337ab7;
+			}
+		}
+		> * {
+		    position: relative;
+		    display: block;
+		    padding: 10px 15px;
+		    border-radius: 4px;
+		    &:hover {
+		    	cursor: pointer;
+		    }
+		}
+	}
+}

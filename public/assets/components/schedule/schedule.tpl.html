@@ -1,34 +1,68 @@
 <h1>{{model.title}}</h1>
-<p>Наименование:</p>
-<input type="text" ng-model="model.lecture.name">
-<p>Школа:</p>
-<select name="school" ng-model="model.lecture.school">
-	<option ng-repeat="school in model.schools" value="{{school.id}}">{{school.name}}</option>
-</select>
-<p>Лектор:</p>
-<select name="lector" ng-model="model.lecture.lector">
-	<option ng-repeat="lector in model.lectors" value="{{lector.id}}">{{lector.name}}</option>
-</select>
-<p>Аудитория:</p>
-<select name="room" ng-model="model.lecture.room">
-	<option ng-repeat="room in model.rooms" value="{{room.id}}">{{room.name}}</option>
-</select>
-<p>Дата:</p>
-<!-- <input type="text" ng-model="model.lecture.date" mask="dd.MM.yyyy"> -->
-<p class="input-group">
-  <input type="text" class="form-control" ng-model="model.lecture.date" uib-datepicker-popup ng-model="dt" is-open="popup2.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
-  <span class="input-group-btn">
-    <button type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
-  </span>
-</p>
+<form class="form-horizontal">
+	<div class="form-group">
+		<label class="col-sm-2 control-label">Наименование</label>
+		<div class="col-sm-10">
+			<input type="text" class="form-control" ng-model="model.lecture.name">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label">Школа</label>
+		<div class="col-sm-10">
+			<select class="form-control" name="school" ng-model="model.lecture.school">
+				<option ng-repeat="school in model.schools" value="{{school.id}}">{{school.name}}</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label">Лектор</label>
+		<div class="col-sm-10">
+			<select class="form-control" name="lector" ng-model="model.lecture.lector">
+				<option ng-repeat="lector in model.lectors" value="{{lector.id}}">{{lector.name}}</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label">Аудитория</label>
+		<div class="col-sm-10">
+			<select class="form-control" name="room" ng-model="model.lecture.room">
+				<option ng-repeat="room in model.rooms" value="{{room.id}}">{{room.name}}</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label">Дата</label>
+		<div class="col-sm-10">
+			<p class="input-group">
+			  <input type="text" class="form-control" ng-model="model.lecture.date" uib-datepicker-popup ng-model="dt" is-open="popup2.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+			  <span class="input-group-btn">
+			    <button type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
+			  </span>
+			</p>
+		</div>
+	</div>
+</form>
 
 <hr>
 
-<button ng-if="!model.isSelect" ng-click="model.addLecture(model.lecture)" ng-disabled="!model.lecture.name">Добавить</button>
-<button ng-if="model.isSelect" ng-click="model.update(model.lecture)" ng-disabled="!model.lecture.name">Сохранить</button>
-<button ng-if="model.isSelect" ng-click="model.cancel()">Отменить</button>
-<h4>Лекции</h4>
-<table>
+<button class="btn btn-default" ng-if="!model.isSelect" ng-click="model.addLecture(model.lecture)" ng-disabled="!model.lecture.name">Добавить</button>
+<button class="btn btn-default" ng-if="model.isSelect" ng-click="model.update(model.lecture)" ng-disabled="!model.lecture.name">Сохранить</button>
+<button class="btn btn-default" ng-if="model.isSelect" ng-click="model.cancel()">Отменить</button>
+
+<hr>
+
+<h2>Расписание</h2>
+<table class="table">
+	<thead ng-if="model.schedule">
+		<tr>
+			<th>Название лекции</th>
+			<th>Лектор</th>
+			<th>Школа</th>
+			<th>Аудитория</th>
+			<th>Дата</th>
+			<th colspan="2"></th>
+		</tr>
+	</thead>
 	<tbody>
 		<tr ng-repeat="lecture in model.schedule">
 			<td>{{lecture.name}}</td>
@@ -36,8 +70,11 @@
 			<td>{{lecture.school}}</td>
 			<td>{{lecture.room}}</td>
 			<td>{{lecture.date}}</td>
-			<td><button ng-click="model.remove(lecture)">x</button></td>
-			<td><button ng-click="model.select(lecture)">редактировать</button></td>
+			<td><button ng-click="model.select(lecture)"><i class="glyphicon glyphicon-pencil"></i></button></td>
+			<td><button ng-click="model.remove(lecture)"><i class="glyphicon glyphicon-trash"></i></button></td>
+		</tr>
+		<tr ng-if="!model.schedule">
+			<td colspan="7">Лекций нет</td>
 		</tr>
 	</tbody>
 </table>

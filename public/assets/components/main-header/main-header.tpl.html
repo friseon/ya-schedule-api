@@ -1,4 +1,20 @@
-<button class="btn btn-primary btn-lg" ng-click="model.linkTo('home')" ng-class="{'active': model.isActive('home')}">Расписание</button>
-<button class="btn btn-primary btn-lg" ng-if="model.isLogin" ng-click="model.linkTo('admin')" ng-class="{'active': model.isActive('admin')}">Управление</button>
-<button class="btn btn-success btn-lg" ng-if="model.isLogin" ng-click="model.logout()">Выход</button>
-<button class="btn btn-success btn-lg" ng-if="!model.isLogin" ng-click="model.linkTo('login')" ng-class="{'active': model.isActive('login')}">Войти</button>
+<div class="navbar navbar-default">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<ul class="nav nav-pills">
+				<li class="navbar-btn" ng-click="model.linkTo('home')" ng-class="{'active': model.isActive('home')}">
+					<span>Расписание</span>
+				</li>
+				<li class="navbar-btn" ng-if="model.isLogin" ng-click="model.linkTo('admin')" ng-class="{'active': model.isActive('admin')}">
+					<span>Управление</span>
+				</li>
+			</ul>
+		</div>
+		<div class="collapse navbar-collapse">
+			<p class="navbar-text navbar-right">
+				<span class="navbar-link" ng-if="model.isLogin" ng-click="model.logout()">Выход</span>
+				<span class="navbar-link" ng-if="!model.isLogin" ng-click="model.linkTo('login')" ng-class="{'active': model.isActive('login')}">Войти</span>
+			</p>
+		</div>
+	</div>
+</div>

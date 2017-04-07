@@ -1,8 +1,13 @@
-<div class="admin_navigation">
-	<a ui-sref="admin.schedule" ui-sref-active="active">Лекции</a>
-	<a ui-sref="admin.lectors" ui-sref-active="active">Лекторы</a>
-	<a ui-sref="admin.schools" ui-sref-active="active">Школы</a>
-	<a ui-sref="admin.class-rooms" ui-sref-active="active">Аудитории</a>
+<div class="container">
+	<div class="page-header">
+		<ul class="nav nav-pills">
+			<li ui-sref-active="active"><a ui-sref="admin.schedule">Лекции</a></li>
+			<li ui-sref-active="active"><a ui-sref="admin.lectors">Лекторы</a></li>
+			<li ui-sref-active="active"><a ui-sref="admin.schools">Школы</a></li>
+			<li ui-sref-active="active"><a ui-sref="admin.class-rooms">Аудитории</a></li>
+		</ul>
+	</div>
+	<ui-view></ui-view>
 </div>
-<ui-view></ui-view>
+
 <toast></toast>
