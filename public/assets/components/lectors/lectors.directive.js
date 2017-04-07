@@ -23,9 +23,6 @@
         	var model = this;
 
             model.lector = {};
-            
-            // сообщение (например, такой лектор уже существует)
-            model.message = "";
 
             model.lectors = [];
 
@@ -41,11 +38,7 @@
             // добавление лектора
             model.addLector = function(lector) {
                 lectorsService.addLector(lector).then(function(result) {
-                    if (result && result.error) {
-                        model.message = result.error;
-                    }
-                    else if (result === true){
-                        model.message = "";
+                    if (result === true) {
                         model.lector = {};
                     }
                 });
@@ -55,7 +48,9 @@
             // удаление лектора
             model.remove = function(lector) {
                 lectorsService.removeLector(lector).then(function(result){
-                    getLectors();
+                    if (result === true) {
+                        getLectors();
+                    }
                 });
             }
 
@@ -73,11 +68,7 @@
             // редактировать лектора
             model.update = function(lector) {
                 lectorsService.updateLector(lector).then(function(result){
-                    if (result && result.error) {
-                        model.message = result.error;
-                    }
-                    else if (result === true){
-                        model.message = "";
+                    if (result === true) {
                         model.lector = {};
                         model.isSelect = false;
                     }

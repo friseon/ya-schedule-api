@@ -20,11 +20,11 @@ var addClassRoom = function(req, res) {
             if (err) {
                 if (err.toString().indexOf('UNIQUE constraint failed') >= 0) {
             		logger.error("Такая аудитория уже существует:", newRoom.name)
-                	res.send({error: "Такая аудитория уже существует"});
+                	res.send({warning: "Такая аудитория уже существует"});
                 }
                 else {
                     logger.error(query, ":", err);
-                    res.send({error: "Ошибка сервера. Выполнить операцию не удалось."});
+                    res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
                 }
             }
             else {
@@ -43,11 +43,11 @@ var updateClassRoom = function(req, res) {
             if (err) {
                 if (err.toString().indexOf('UNIQUE constraint failed') >= 0) {
                     logger.error("Такая аудитория уже существует:", room.name)
-                    res.send({error: "Такая аудитория уже существует"});
+                    res.send({warning: "Такая аудитория уже существует"});
                 }
                 else {
                     logger.error(query, ":", err);
-                    res.send({error: "Ошибка сервера. Выполнить операцию не удалось."});
+                    res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
                 }
             }
             else {
@@ -61,18 +61,25 @@ var updateClassRoom = function(req, res) {
 var removeClassRoom = function(req, res) {
     if (req.session.user) {
         var room = req.body;
-    	var query = "DELETE FROM classRooms where id = " + room.id ;
-    	
-        database.run(query, function(err, row) {
-            if (err) {
-                logger.error(query, ":", err);
-                res.send({error: "Ошибка сервера. Выполнить операцию не удалось."});
+        database.all("SELECT * FROM Schedule WHERE idRoom = " + room.id, function(err, rows) {
+            if (rows.length) {
+                res.send({warning: "Нельзя удалить эту удиторию, т.к. в ней есть лекция в расписании"});
             }
             else {
-            	logger.info("Удалена аудитория:", room.name);
-                res.send(true);
+            	var query = "DELETE FROM classRooms where id = " + room.id ;
+            	
+                database.run(query, function(err, row) {
+                    if (err) {
+                        logger.error(query, ":", err);
+                        res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
+                    }
+                    else {
+                    	logger.info("Удалена аудитория:", room.name);
+                        res.send(true);
+                    }
+                })
             }
-        })
+        });
     }
 }
 
@@ -83,7 +90,7 @@ var getClassRooms = function(req, res) {
     	database.all("SELECT id, name, capacity, description FROM classRooms", function(err, rows) {
     	    if (err) {
                 logger.error("GET all FROM classRooms", err);
-    	    	res.send({error: "Ошибка сервера. Выполнить операцию не удалось."});
+    	    	res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
     	    }
             else {
                 rows.forEach(function (row) {

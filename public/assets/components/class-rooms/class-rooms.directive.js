@@ -36,11 +36,7 @@
             // добавление аудитории
             model.addClassRoom = function(room) {
                 classRoomsService.addClassRoom(room).then(function(result) {
-                    if (result && result.error) {
-                        model.message = result.error;
-                    }
-                    else if (result === true) {
-                        model.message = "";
+                    if (result === true) {
                         model.room = {};
                     }
                 });
@@ -50,7 +46,9 @@
             // удаление аудитории
             model.remove = function(room) {
                 classRoomsService.removeClassRoom(room).then(function(result){
-                     getClassRooms();
+                    if (result === true) {
+                        getClassRooms();
+                    }
                 });
             }
 
@@ -68,11 +66,7 @@
             // редактировать аудиторию
             model.update = function(room) {
                 classRoomsService.updateClassRoom(room).then(function(result){
-                    if (result && result.error) {
-                        model.message = result.error;
-                    }
-                    else if (result === true){
-                        model.message = "";
+                    if (result === true) {
                         model.room = {};
                         model.isSelect = false;
                     }

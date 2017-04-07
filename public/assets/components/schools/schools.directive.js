@@ -25,8 +25,6 @@
 
             model.isSelect = false;
 
-            model.message = "";
-
             $scope.$watch('model.isSelect', function(newV, oldV) {
                 if (newV === false)
                     model.title = "Добавление новой школы";
@@ -37,11 +35,7 @@
             // добавление школы
             model.addSchool = function(school) {
                 schoolsService.addSchool(school).then(function(result) {
-                    if (result && result.error) {
-                        model.message = result.error;
-                    }
-                    else if (result === true) {
-                        model.message = "";
+                    if (result === true) {
                         model.school = {};
                         getSchools();
                     }
@@ -51,7 +45,9 @@
             // удаление школы
             model.remove = function(school) {
                 schoolsService.removeSchool(school).then(function(result) {
-                    getSchools();
+                    if (result === true){
+                        getSchools();
+                    }
                 });
             }
 
@@ -69,11 +65,7 @@
             // редактировать школу
             model.update = function(school) {
                 schoolsService.updateSchool(school).then(function(result){
-                    if (result && result.error) {
-                        model.message = result.error;
-                    }
-                    else if (result === true){
-                        model.message = "";
+                    if (result === true){
                         model.school = {};
                         model.isSelect = false;
                     }

@@ -20,11 +20,11 @@ var addLector = function(req, res) {
             if (err) {
                 if (err.toString().indexOf('UNIQUE constraint failed') >= 0) {
             		logger.error("Такой лектор уже существует:", newLector.name, newLector.lastname)
-                	res.send({error: "Такой лектор уже существует"});
+                	res.send({warning: "Такой лектор уже существует"});
                 }
                 else {
                     logger.error(query, ":", err);
-                    res.send({error: "Ошибка сервера. Выполнить операцию не удалось."});
+                    res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
                 }
             }
             else {
@@ -43,11 +43,11 @@ var updateLector = function(req, res) {
             if (err) {
                 if (err.toString().indexOf('UNIQUE constraint failed') >= 0) {
                     logger.error("Такой лектор уже существует:", lector.name, lector.lastname)
-                    res.send({error: "Такой лектор уже существует"});
+                    res.send({warning: "Такой лектор уже существует"});
                 }
                 else {
                     logger.error(query, ":", err);
-                    res.send({error: "Ошибка сервера. Выполнить операцию не удалось."});
+                    res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
                 }
             }
             else {
@@ -61,18 +61,25 @@ var updateLector = function(req, res) {
 var removeLector = function(req, res) {
     if (req.session.user) {
         var lector = req.body;
-    	var query = "DELETE FROM Lectors where id = " + lector.id ;
-    	
-        database.run(query, function(err, row) {
-            if (err) {
-                logger.error(query, ":", err);
-                res.send({error: "Ошибка сервера. Выполнить операцию не удалось."});
+        database.all("SELECT * FROM Schedule WHERE idLector = " + lector.id, function(err, rows) {
+            if (rows.length) {
+                res.send({warning: "Нельзя удалить этого лектора, т.к. у него есть лекция в расписании"});
             }
             else {
-            	logger.info("Удален лектор:", lector.name, lector.lastname);
-                res.send(true);
+            	var query = "DELETE FROM Lectors where id = " + lector.id ;
+            	
+                database.run(query, function(err, row) {
+                    if (err) {
+                        logger.error(query, ":", err);
+                        res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
+                    }
+                    else {
+                    	logger.info("Удален лектор:", lector.name, lector.lastname);
+                        res.send(true);
+                    }
+                })
             }
-        })
+        });
     }
 }
 
@@ -83,7 +90,7 @@ var getLectors = function(req, res) {
     	database.all("SELECT id, name, lastname, description FROM Lectors", function(err, rows) {
     	    if (err) {
                 logger.error("GET ALL FROM Lectors", err);
-    	    	res.send({error: "Ошибка сервера. Выполнить операцию не удалось."});
+    	    	res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
     	    }
             else {
                 rows.forEach(function (row) {

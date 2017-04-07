@@ -1,15 +1,13 @@
 exports.home = function (req, res) {
 	res.render('home', {
-		title: 'Home page',
-		isLogin: req.session ? !!req.session.user : false,
-		message: 'This is the Home'
+		title: 'Главная',
+		isLogin: req.session ? !!req.session.user : false
 	})
 }
 
 exports.admin = function (req, res) {
 	res.render('admin', {
-		title: 'Admin page',
-		isLogin: req.session ? !!req.session.user : false,
-		message: 'This is the Adminka!'
+		title: 'Администрирование',
+		isLogin: req.session ? !!req.session.user : false
 	})
 }

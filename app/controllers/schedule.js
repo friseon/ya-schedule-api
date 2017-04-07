@@ -19,11 +19,11 @@ var addLecture = function(req, res) {
             if (err) {
                 if (err.toString().indexOf('UNIQUE constraint failed') >= 0) {
             		logger.error("Такая лекция уже существует:", newLecture.name)
-                	res.send({error: "Такая лекция уже существует"});
+                	res.send({warning: "Такая лекция уже существует"});
                 }
                 else {
                     logger.error(query, ":", err);
-                    res.send({error: "Ошибка сервера. Выполнить операцию не удалось."});
+                    res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
                 }
             }
             else {
@@ -37,11 +37,10 @@ var addLecture = function(req, res) {
 var getLecture = function(req, res) {
     if (req.session.user) {
         var id = req.params.id;
-        console.log(id);
         database.all("SELECT id, name, idLector, idSchool, idRoom, date FROM Schedule WHERE id = " + id, function(err, rows) {
             if (err) {
                 logger.error("GET Lecture FROM Schedule", err)
-                res.send({error: "Ошибка сервера. Выполнить операцию не удалось."});
+                res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
             }
             else if (rows) {
                 res.send(rows[0]);
@@ -58,11 +57,11 @@ var updateLecture = function(req, res) {
             if (err) {
                 if (err.toString().indexOf('UNIQUE constraint failed') >= 0) {
                     logger.error("Такая лекция уже существует:", lecture.name)
-                    res.send({error: "Такая лекция уже существует"});
+                    res.send({warning: "Такая лекция уже существует"});
                 }
                 else {
                     logger.error(query, ":", err);
-                    res.send({error: "Ошибка сервера. Выполнить операцию не удалось."});
+                    res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
                 }
             }
             else {
@@ -80,7 +79,7 @@ var removeLecture = function(req, res) {
         database.run(query, function(err, row) {
             if (err) {
                 logger.error(query, ":", err);                
-                res.send({error: "Ошибка сервера. Выполнить операцию не удалось."});
+                res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
             }
             else {
             	logger.info("Удалена лекция:", lecture.name);
@@ -102,7 +101,7 @@ var getSchedule = function(req, res) {
                   ORDER BY schedule.date ASC", function(err, rows) {
 	    if (err) {
             logger.error("GET ALL FROM Schedule", err)
-	    	res.send({error: "Ошибка сервера. Выполнить операцию не удалось."});
+	    	res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
 	    }
         else {
             rows.forEach(function (row) {

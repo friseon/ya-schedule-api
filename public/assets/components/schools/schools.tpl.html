@@ -3,7 +3,6 @@
 <input type="text" ng-model="model.school.name">
 <p>Кол-во студентов:</p>
 <input type="number" ng-model="model.school.students">
-<p ng-if="model.message">{{model.message}}</p>
 <hr>
 <button ng-if="!model.isSelect" ng-click="model.addSchool(model.school)" ng-disabled="!model.school.name || !model.school.students">Добавить</button>
 <button ng-if="model.isSelect" ng-click="model.update(model.school)" ng-disabled="!model.school.name || !model.school.students">Сохранить</button>

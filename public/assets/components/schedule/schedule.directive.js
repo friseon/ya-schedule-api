@@ -25,8 +25,6 @@
 
             model.isSelect = false;
 
-            model.message = "";
-
             $scope.$watch('model.isSelect', function(newV, oldV) {
                 if (newV === false)
                     model.title = "Добавление новой лекции";
@@ -45,11 +43,7 @@
             // добавление лекции
             model.addLecture = function(lecture) {
                 scheduleService.addLecture(lecture).then(function(result) {
-                    if (result && result.error) {
-                        model.message = result.error;
-                    }
-                    else if (result === true) {
-                        model.message = "";
+                    if (result === true) {
                         model.lecture = {};
                         getSchedule();
                     }
@@ -59,12 +53,7 @@
             // получение лекции
             var getLecture = function(id) {
                 scheduleService.getLecture(id).then(function(result) {
-                    console.log(result);
-                    if (result && result.error) {
-                        model.message = result.error;
-                    }
-                    else if (result) {
-                        model.message = "";
+                    if (result) {
                         model.lecture = result;
                     }
                 });
@@ -91,11 +80,7 @@
             // редактировать лекцию
             model.update = function(lecture) {
                 scheduleService.updateLecture(lecture).then(function(result){
-                    if (result && result.error) {
-                        model.message = result.error;
-                    }
-                    else if (result === true){
-                        model.message = "";
+                    if (result === true) {
                         model.lecture = {};
                         model.isSelect = false;
                     }

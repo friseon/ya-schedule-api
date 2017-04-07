@@ -11,35 +11,28 @@ module.exports = function(app) {
 
 login = function(req, res) {
 	var user = req.body;
+	var resultData = {};
 	var query = "SELECT id, name, email from USERS where (login = '" + user.login + "' or email = '" + user.login + "') and password = '" + user.password + "'";
 	database.all(query, function(err, rows) {
-	    var result;
-	    var error;
 	    var selectedUser;
 	    if (err) {
-	    	result = false;
-	    	error = err;
 	    	logger.error('Вход пользователя', user.login, '- ошибка: ', err);
 	    }
-	    if (rows && rows.length == 1) {
-	    	result = true;
+	    else if (rows && rows.length == 1) {
 	    	selectedUser = rows[0];
 	    	logger.info('Вход пользователя', user.login);
 	    	req.session.user = selectedUser;
 
 	    	resultData = {
-		        'result': result,
-		        'message': error,
-		        'user': selectedUser
+		        result: true,
+		        user: selectedUser
 	     	}
-	    } else {
-	    	result = false;
-	    	error = "Неверный логин или пароль";
+	    }
+	    else {
 	    	logger.warn('Вход как', user.login, 'не удался - неверный логин или пароль'); 
 	         
 	    	resultData = {
-		        'result': result,
-		        'message': error
+		        warning: "Неверный логин или пароль"
 	    	}
 	    }
 	    res.send(resultData);

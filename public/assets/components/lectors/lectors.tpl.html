@@ -5,7 +5,6 @@
 <input type="text" ng-model="model.lector.name">
 <p>Общая информация:</p>
 <input type="text" ng-model="model.lector.description">
-<p ng-if="model.message">{{model.message}}</p>
 <hr>
 <button ng-if="!model.isSelect" ng-click="model.addLector(model.lector)" ng-disabled="!model.lector.name || !model.lector.lastname">Добавить</button>
 <button ng-if="model.isSelect" ng-click="model.update(model.lector)" ng-disabled="!model.lector.name || !model.lector.lastname">Сохранить</button>
