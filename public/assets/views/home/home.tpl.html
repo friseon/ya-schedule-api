@@ -16,7 +16,7 @@
 				<td>{{lecture.lector}}</td>
 				<td>{{lecture.school}}</td>
 				<td>{{lecture.room}}</td>
-				<td>{{lecture.date}}</td>
+				<td>{{lecture.date | date: "dd.MM.yyyy"}}</td>
 			</tr>
 			<tr ng-if="!model.schedule">
 				<td colspan="5">Лекций нет</td>

@@ -21,6 +21,7 @@
         function controller($scope, scheduleService, schoolsService, lectorsService, classRoomsService) {
 
             var model = this;
+
             model.schedule = [];
 
             model.isSelect = false;
@@ -32,13 +33,17 @@
                     model.title = "Редактирование лекции";
             })
 
-            $scope.open2 = function() {
-                $scope.popup2.opened = true;
+            model.openLectureDate = function() {
+                model.isLectureDateOpened = true;
             };
 
-            $scope.popup2 = {
-                opened: false
-            };
+            model.isLectureDateOpened = false;
+
+            function disabled(data) {
+                var date = data.date,
+                    mode = data.mode;
+                return mode === 'day' && (date.getDay() === 0 || date.getDay() === 6)
+            }
 
             // добавление лекции
             model.addLecture = function(lecture) {
@@ -55,6 +60,7 @@
                 scheduleService.getLecture(id).then(function(result) {
                     if (result) {
                         model.lecture = result;
+                        model.lecture.date = new Date(model.lecture.date);
                     }
                 });
             }

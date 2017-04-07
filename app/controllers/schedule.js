@@ -43,7 +43,7 @@ var getLecture = function(req, res) {
                 res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
             }
             else if (rows) {
-                res.send(rows[0]);
+                res.send(new Lecture(rows[0]));
             }
         });
     }
@@ -53,7 +53,7 @@ var updateLecture = function(req, res) {
     if (req.session.user) {
         var lecture = req.body;
         var query = "UPDATE Schedule set (name, idLector, idSchool, idRoom, date) = (?, ?, ?, ?, ?) WHERE id = " + lecture.id;
-        database.run(query, [lecture.name, lecture.students], function(err, row) {
+        database.run(query, [lecture.name, lecture.idLector, lecture.idSchool, lecture.idRoom, lecture.date], function(err, row) {
             if (err) {
                 if (err.toString().indexOf('UNIQUE constraint failed') >= 0) {
                     logger.error("Такая лекция уже существует:", lecture.name)
