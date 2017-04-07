@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js local",
-    "test": "make test"
+    "test": "make test",
+    "webpack": "node_modules/.bin/webpack --config webpack.config.js",
+    "webpack-w": "node_modules/.bin/webpack -w --config webpack.config.js"
   },
   "author": "",
   "license": "ISC",

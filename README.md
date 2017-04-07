@@ -2,16 +2,17 @@
 
 ## Start 
 
+Установить node.js
+https://nodejs.org
+
 Установить все модули
 ``npm install``
 
-Установить Webpack
-``npm install webpack -g``
+Собрать проект dev (/dist)
+``npm run webpack`` (build) || ``npm run webpack-w`` (watching)
 
-Собрать dev (/dist)
-``webpack`` || ``webpack -w`` (watcher)
-
-Запустить локальный сервер
+Запустить локальный сервер (в другой консоли, если webpack в режиме watching)
 ``npm start``
 
+Доступ по адресу:
 http://127.0.0.1:9250
