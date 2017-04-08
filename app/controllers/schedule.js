@@ -4,35 +4,12 @@ var logger = require('winston'),
 
 // Routes
 module.exports = function(app) {
-    app.post('/addLecture', addLecture);
+    app.post('/addLecture', updateLecture);
     app.post('/updateLecture', updateLecture);
     app.get('/lecture/:id', getLecture);
     app.post('/removeLecture', removeLecture);
     app.get('/getSchedule', getSchedule); 
 };
-
-var addLecture = function(req, res) {
-    if (req.session.user) {
-        var newLecture = req.body;
-    	var query = "INSERT into Schedule (name, idLector, idSchool, idRoom, date) values (?, ?, ?, ?, ?)";
-        database.run(query, [newLecture.name, newLecture.lector, newLecture.school, newLecture.room, newLecture.date], function(err, row) {
-            if (err) {
-                if (err.toString().indexOf('UNIQUE constraint failed') >= 0) {
-            		logger.error("Такая лекция уже существует:", newLecture.name)
-                	res.send({warning: "Такая лекция уже существует"});
-                }
-                else {
-                    logger.error(query, ":", err);
-                    res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
-                }
-            }
-            else {
-            	logger.info("Добавлена лекция:", newLecture.name);
-                res.send(true);
-            }
-        })
-    }
-}
 
 var getLecture = function(req, res) {
     if (req.session.user) {
@@ -52,23 +29,58 @@ var getLecture = function(req, res) {
 var updateLecture = function(req, res) {
     if (req.session.user) {
         var lecture = req.body;
-        var query = "UPDATE Schedule set (name, idLector, idSchool, idRoom, date) = (?, ?, ?, ?, ?) WHERE id = " + lecture.id;
-        database.run(query, [lecture.name, lecture.idLector, lecture.idSchool, lecture.idRoom, lecture.date], function(err, row) {
+        var capacity = 0;
+        var students = 1;
+        var query = "";
+        database.all("SELECT capacity FROM Classrooms WHERE id = " + lecture.idRoom, function(err, rows) {
             if (err) {
-                if (err.toString().indexOf('UNIQUE constraint failed') >= 0) {
-                    logger.error("Такая лекция уже существует:", lecture.name)
-                    res.send({warning: "Такая лекция уже существует"});
-                }
-                else {
-                    logger.error(query, ":", err);
-                    res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
-                }
+                logger.error("GET capacity FROM Classrooms", err)
+                res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
             }
-            else {
-                logger.info("Обновлена лекция:", lecture.name);
-                res.send(true);
+            else if (rows) {
+                capacity = rows[0].capacity;
+
+                database.all("SELECT students FROM SCHOOLS WHERE id = " + lecture.idSchool, function(err, rows) {
+                    if (err) {
+                        logger.error("GET students FROM SCHOOLS", err)
+                        res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
+                    }
+                    else if (rows) {
+                        students = rows[0].students;
+
+                        if (capacity >= students) {
+                            if (lecture.id) {
+                                query = "UPDATE Schedule set (name, idLector, idSchool, idRoom, date) = (?, ?, ?, ?, ?) WHERE id = " + lecture.id;
+                            }
+                            else {
+                                query = "INSERT into Schedule (name, idLector, idSchool, idRoom, date) values (?, ?, ?, ?, ?)";
+                            }
+                            database.run(query, [lecture.name, lecture.idLector, lecture.idSchool, lecture.idRoom, lecture.date], function(err, row) {
+                                if (err) {
+                                    if (err.toString().indexOf('UNIQUE constraint failed: Schedule.idRoom, Schedule.date') >= 0) {
+                                        res.send({warning: "Аудитория на эту дату занята"});
+                                    }
+                                    else if (err.toString().indexOf('UNIQUE constraint failed: Schedule.idSchool, Schedule.date') >= 0) {
+                                        res.send({warning: "У школы уже есть лекция на эту дату"});
+                                    }
+                                    else {
+                                        logger.error(query, ":", err);
+                                        res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
+                                    }
+                                }
+                                else {
+                                    logger.info("Обновлена лекция:", lecture.name);
+                                    res.send(true);
+                                }
+                            });
+                        }
+                        else {
+                            res.send({warning: "Выбранная аудитория не может вместить количество студентов в этой школе"});
+                        }
+                    }
+                });
             }
-        })
+        });
     }
 }
 

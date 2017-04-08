@@ -1,22 +1,46 @@
 <h1>{{model.title}}</h1>
-<p>Фамилия:</p>
-<input type="text" ng-model="model.lector.lastname">
-<p>Имя:</p>
-<input type="text" ng-model="model.lector.name">
-<p>Общая информация:</p>
-<input type="text" ng-model="model.lector.description">
 <hr>
-<button ng-if="!model.isSelect" ng-click="model.addLector(model.lector)" ng-disabled="!model.lector.name || !model.lector.lastname">Добавить</button>
-<button ng-if="model.isSelect" ng-click="model.update(model.lector)" ng-disabled="!model.lector.name || !model.lector.lastname">Сохранить</button>
-<button ng-if="model.isSelect" ng-click="model.cancel()">Отменить</button>
-<h4>Лекторы</h4>
-<table>
+<form class="form-horizontal">
+	<div class="form-group">
+		<label class="col-sm-2 control-label">Фамилия</label>
+		<div class="col-sm-10">
+			<input type="text" class="form-control" ng-model="model.lector.lastname">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label">Имя</label>
+		<div class="col-sm-10">
+			<input type="text" class="form-control" ng-model="model.lector.name">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label">Общая информация</label>
+		<div class="col-sm-10">
+			<textarea type="text" class="form-control" ng-model="model.lector.description" rows="8" resize="none"></textarea>
+		</div>
+	</div>
+</form>
+
+<button class="btn btn-default" ng-if="!model.isSelect" ng-click="model.addLector(model.lector)" ng-disabled="!model.lector.name || !model.lector.lastname">Добавить</button>
+<button class="btn btn-default" ng-if="model.isSelect" ng-click="model.update(model.lector)" ng-disabled="!model.lector.name || !model.lector.lastname">Сохранить</button>
+<button  class="btn btn-default"ng-if="model.isSelect" ng-click="model.cancel()">Отменить</button>
+
+<h1>Лекторы</h1>
+<hr>
+<table class="table">
+	<thead ng-if="model.lectors.length">
+		<tr>
+			<th>Лектор</th>
+			<th>Информация</th>
+			<th colspan="2"></th>
+		</tr>
+	</thead>
 	<tbody>
 		<tr ng-repeat="item in model.lectors">
 			<td>{{item.fullname}}</td>
 			<td>{{item.description}}</td>
-			<td><button ng-click="model.remove(item)">x</button></td>
-			<td><button ng-click="model.select(item)">редактировать</button></td>
+			<td><button ng-click="model.select(item)"><i class="glyphicon glyphicon-pencil"></i></button></td>
+			<td><button ng-click="model.remove(item)"><i class="glyphicon glyphicon-trash"></i></button></td>
 		</tr>
 	</tbody>
 </table>

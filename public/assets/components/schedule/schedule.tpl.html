@@ -1,4 +1,5 @@
 <h1>{{model.title}}</h1>
+<hr>
 <form class="form-horizontal">
 	<div class="form-group">
 		<label class="col-sm-2 control-label">Наименование</label>
@@ -18,7 +19,7 @@
 		<label class="col-sm-2 control-label">Лектор</label>
 		<div class="col-sm-10">
 			<select class="form-control" name="lector" ng-model="model.lecture.idLector">
-				<option ng-repeat="lector in model.lectors" ng-value="{{lector.id}}">{{lector.name}}</option>
+				<option ng-repeat="lector in model.lectors" ng-value="{{lector.id}}">{{lector.fullname}}</option>
 			</select>
 		</div>
 	</div>
@@ -26,7 +27,7 @@
 		<label class="col-sm-2 control-label">Аудитория</label>
 		<div class="col-sm-10">
 			<select class="form-control" name="room" ng-model="model.lecture.idRoom">
-				<option ng-repeat="room in model.rooms" ng-value="{{room.id}}">{{room.name}}</option>
+				<option ng-repeat="room in model.rooms" ng-value="{{room.id}}">{{room.name}} ({{room.capacity}})</option>
 			</select>
 		</div>
 	</div>
@@ -43,17 +44,14 @@
 	</div>
 </form>
 
-<hr>
-
 <button class="btn btn-default" ng-if="!model.isSelect" ng-click="model.addLecture(model.lecture)" ng-disabled="!model.lecture.name">Добавить</button>
 <button class="btn btn-default" ng-if="model.isSelect" ng-click="model.update(model.lecture)" ng-disabled="!model.lecture.name">Сохранить</button>
 <button class="btn btn-default" ng-if="model.isSelect" ng-click="model.cancel()">Отменить</button>
 
-<hr>
-
 <h2>Расписание</h2>
+<hr>
 <table class="table">
-	<thead ng-if="model.schedule">
+	<thead ng-if="model.schedule.length">
 		<tr>
 			<th>Название лекции</th>
 			<th>Лектор</th>
