@@ -34,21 +34,30 @@
                     model.title = "Редактирование лекции";
             })
 
+            model.updateDate = function(date) {
+                var hoursStart = model.lecture.timeStart ? model.lecture.timeStart.getHours() : 12;
+                var minutesStart = model.lecture.timeStart ? model.lecture.timeStart.getMinutes() : 0;
+                model.lecture.timeStart = new Date(date);
+                model.lecture.timeStart.setHours(hoursStart);
+                model.lecture.timeStart.setMinutes(minutesStart);
+                
+                var hoursEnd = model.lecture.timeEnd ? model.lecture.timeEnd.getHours() : hoursStart + 1;
+                var minutesEnd = model.lecture.timeEnd ? model.lecture.timeEnd.getMinutes() : 30;
+                model.lecture.timeEnd = new Date(date);
+                model.lecture.timeEnd.setHours(hoursEnd);
+                model.lecture.timeEnd.setMinutes(minutesEnd);
+            };
+
             model.openLectureDate = function() {
                 model.isLectureDateOpened = true;
             };
 
             model.isLectureFull = function() {
-                return model.lecture.name && model.lecture.idSchool && model.lecture.idLector && model.lecture.idRoom && model.lecture.date 
+                console.log(model.lecture);
+                return model.lecture.name && model.lecture.idSchool && model.lecture.idLector && model.lecture.idRoom && model.lecture.date && model.lecture.timeStart && model.lecture.timeEnd
             }
 
             model.isLectureDateOpened = false;
-
-            function disabled(data) {
-                var date = data.date,
-                    mode = data.mode;
-                return mode === 'day' && (date.getDay() === 0 || date.getDay() === 6)
-            }
 
             // добавление лекции
             model.addLecture = function(lecture) {
