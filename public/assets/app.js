@@ -43,6 +43,13 @@
 
             $httpProvider.interceptors.push('allert');
         }])
+        .config(['ngToastProvider', function(ngToastProvider){
+            ngToastProvider.configure({
+                verticalPosition: 'bottom',
+                horizontalPosition: 'right',
+                dismissButton: true
+            });
+        }])
         .factory('allert', ['$log', 'ngToast', function($log, ngToast) {
 
             var allert = {
@@ -50,13 +57,13 @@
                     if(typeof response && response.data) {
                         if (response.data.error)
                             ngToast.create({
-                              className: 'danger',
-                              content: response.data.error
+                                className: 'danger',
+                                content: response.data.error
                             });
                         if (response.data.warning)
                             ngToast.create({
-                              className: 'warning',
-                              content: response.data.warning
+                                className: 'warning',
+                                content: response.data.warning
                             });
                     }
                     return response

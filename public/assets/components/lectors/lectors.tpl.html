@@ -19,15 +19,26 @@
 			<textarea type="text" class="form-control" ng-model="model.lector.description" rows="8" resize="none"></textarea>
 		</div>
 	</div>
+	<div class="form-group">
+	    <div class="col-sm-offset-2 col-sm-10">
+	    	<button class="btn btn-default" ng-if="!model.isSelect" ng-click="model.addLector(model.lector)" ng-disabled="!model.lector.name || !model.lector.lastname">Добавить</button>
+			<button class="btn btn-default" ng-if="model.isSelect" ng-click="model.update(model.lector)" ng-disabled="!model.lector.name || !model.lector.lastname">Сохранить</button>
+			<button  class="btn btn-default"ng-if="model.isSelect" ng-click="model.cancel()">Отменить</button>
+	    </div>
+	</div>
 </form>
 
-<button class="btn btn-default" ng-if="!model.isSelect" ng-click="model.addLector(model.lector)" ng-disabled="!model.lector.name || !model.lector.lastname">Добавить</button>
-<button class="btn btn-default" ng-if="model.isSelect" ng-click="model.update(model.lector)" ng-disabled="!model.lector.name || !model.lector.lastname">Сохранить</button>
-<button  class="btn btn-default"ng-if="model.isSelect" ng-click="model.cancel()">Отменить</button>
+
 
 <h1>Лекторы</h1>
 <hr>
 <table class="table">
+	<colgroup>
+		<col>
+		<col width="100%">
+		<col>
+		<col>
+	</colgroup>
 	<thead ng-if="model.lectors.length">
 		<tr>
 			<th>Лектор</th>

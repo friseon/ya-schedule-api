@@ -1,20 +1,49 @@
 <h1>{{model.title}}</h1>
-<p>Наименование:</p>
-<input type="text" ng-model="model.school.name">
-<p>Кол-во студентов:</p>
-<input type="number" ng-model="model.school.students">
 <hr>
-<button ng-if="!model.isSelect" ng-click="model.addSchool(model.school)" ng-disabled="!model.school.name || !model.school.students">Добавить</button>
-<button ng-if="model.isSelect" ng-click="model.update(model.school)" ng-disabled="!model.school.name || !model.school.students">Сохранить</button>
-<button ng-if="model.isSelect" ng-click="model.cancel()">Отменить</button>
-<h4>Школы</h4>
-<table>
+<form class="form-horizontal">
+	<div class="form-group">
+		<label class="col-sm-2 control-label">Наименование</label>
+		<div class="col-sm-10">
+			<input type="text" class="form-control" ng-model="model.school.name">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label">Кол-во студентов</label>
+		<div class="col-sm-10">
+			<input type="number" class="form-control" ng-model="model.school.students">
+		</div>
+	</div>
+	<div class="form-group">
+	    <div class="col-sm-offset-2 col-sm-10">
+	    	<button class="btn btn-default" ng-if="!model.isSelect" ng-click="model.addSchool(model.school)" ng-disabled="!model.school.name || !model.school.students">Добавить</button>
+			<button class="btn btn-default" ng-if="model.isSelect" ng-click="model.update(model.school)" ng-disabled="!model.school.name || !model.school.students">Сохранить</button>
+			<button class="btn btn-default" ng-if="model.isSelect" ng-click="model.cancel()">Отменить</button>
+	    </div>
+	</div>
+</form>
+
+<h1>Школы</h1>
+<hr>
+<table class="table">
+	<colgroup>
+		<col width="100%">
+		<col>
+		<col>
+		<col>
+	</colgroup>
+	<thead ng-if="model.schools.length">
+		<tr>
+			<th>Наименование</th>
+			<th>Кол-во студентов</th>
+			<th colspan="2"></th>
+		</tr>
+	</thead>
 	<tbody>
 		<tr ng-repeat="school in model.schools">
 			<td>{{school.name}}</td>
 			<td>{{school.students}}</td>
-			<td><button ng-click="model.remove(school)">x</button></td>
-			<td><button ng-click="model.select(school)">редактировать</button></td>
+			<td><button ng-click="model.select(school)"><i class="glyphicon glyphicon-pencil"></i></button></td>
+			<td><button ng-click="model.remove(school)"><i class="glyphicon glyphicon-trash"></i></button></td>
 		</tr>
 	</tbody>
 </table>

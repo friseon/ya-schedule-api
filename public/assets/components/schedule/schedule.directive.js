@@ -23,6 +23,7 @@
             var model = this;
 
             model.schedule = [];
+            model.lecture = {};
 
             model.isSelect = false;
 
@@ -36,6 +37,10 @@
             model.openLectureDate = function() {
                 model.isLectureDateOpened = true;
             };
+
+            model.isLectureFull = function() {
+                return model.lecture.name && model.lecture.idSchool && model.lecture.idLector && model.lecture.idRoom && model.lecture.date 
+            }
 
             model.isLectureDateOpened = false;
 
