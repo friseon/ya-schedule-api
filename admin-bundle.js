@@ -34,3 +34,5 @@ import styles from './node_modules/angular-ui-bootstrap/dist/ui-bootstrap-csp.cs
 import styles from './node_modules/ng-toast/dist/ngToast.css';
 import styles from './node_modules/ng-toast/dist/ngToast-animations.css';
 import styles from './node_modules/bootstrap/dist/css/bootstrap.css';
+
+import styles from './public/assets/styles/styles.scss';

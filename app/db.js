@@ -68,8 +68,8 @@ createTableSchedule = function() {
 								idSchool INTEGER NOT NULL, \
 								idRoom INTEGER NOT NULL, \
 								date TEXT NOT NULL, \
-								UNIQUE(idSchool, date), \
-								UNIQUE(idRoom, date))", function(err, row) {
+								timeStart timeStart NOT NULL, \
+								timeEnd timeEnd NOT NULL)", function(err, row) {
 		if (err) {
 	        logger.error("Create Table Schedule:", err);
 	    }

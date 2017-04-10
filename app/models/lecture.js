@@ -5,4 +5,6 @@ module.exports = function(params) {
 	this.idSchool = params.idSchool;
 	this.idRoom = params.idRoom;
 	this.date = params.date;
+	this.timeStart = params.timeStart;
+	this.timeEnd = params.timeEnd;
 }

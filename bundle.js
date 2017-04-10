@@ -17,3 +17,5 @@ import styles from './node_modules/bootstrap/dist/css/bootstrap.css';
 import styles from './node_modules/ng-toast/dist/ngToast.css';
 import styles from './node_modules/ng-toast/dist/ngToast-animations.css';
 import styles from './public/assets/components/main-header/main-header.scss';
+
+import styles from './public/assets/styles/styles.scss';

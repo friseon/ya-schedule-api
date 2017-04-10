@@ -18,7 +18,6 @@
 
         // добавление школы
         function addSchool(school) {
-            console.log(school)
             return $http.post('/addSchool', school).then(function(result) {
                 return result ? result.data : false;
             }, function(err) {

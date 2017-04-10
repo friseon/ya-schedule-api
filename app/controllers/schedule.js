@@ -14,7 +14,7 @@ module.exports = function(app) {
 var getLecture = function(req, res) {
     if (req.session.user) {
         var id = req.params.id;
-        database.all("SELECT id, name, idLector, idSchool, idRoom, date FROM Schedule WHERE id = " + id, function(err, rows) {
+        database.all("SELECT id, name, idLector, idSchool, idRoom, timeStart, timeEnd, date FROM Schedule WHERE id = " + id, function(err, rows) {
             if (err) {
                 logger.error("GET Lecture FROM Schedule", err)
                 res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
@@ -29,59 +29,162 @@ var getLecture = function(req, res) {
 var updateLecture = function(req, res) {
     if (req.session.user) {
         var lecture = req.body;
-        var capacity = 0;
-        var students = 1;
-        var query = "";
-        database.all("SELECT capacity FROM Classrooms WHERE id = " + lecture.idRoom, function(err, rows) {
-            if (err) {
-                logger.error("GET capacity FROM Classrooms", err)
-                res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
-            }
-            else if (rows) {
-                capacity = rows[0].capacity;
-
-                database.all("SELECT students FROM SCHOOLS WHERE id = " + lecture.idSchool, function(err, rows) {
-                    if (err) {
-                        logger.error("GET students FROM SCHOOLS", err)
-                        res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
-                    }
-                    else if (rows) {
-                        students = rows[0].students;
-
-                        if (capacity >= students) {
-                            if (lecture.id) {
-                                query = "UPDATE Schedule set (name, idLector, idSchool, idRoom, date) = (?, ?, ?, ?, ?) WHERE id = " + lecture.id;
-                            }
-                            else {
-                                query = "INSERT into Schedule (name, idLector, idSchool, idRoom, date) values (?, ?, ?, ?, ?)";
-                            }
-                            database.run(query, [lecture.name, lecture.idLector, lecture.idSchool, lecture.idRoom, lecture.date], function(err, row) {
-                                if (err) {
-                                    if (err.toString().indexOf('UNIQUE constraint failed: Schedule.idRoom, Schedule.date') >= 0) {
-                                        res.send({warning: "Аудитория на эту дату занята"});
-                                    }
-                                    else if (err.toString().indexOf('UNIQUE constraint failed: Schedule.idSchool, Schedule.date') >= 0) {
-                                        res.send({warning: "У школы уже есть лекция на эту дату"});
-                                    }
-                                    else {
-                                        logger.error(query, ":", err);
-                                        res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
-                                    }
-                                }
-                                else {
-                                    logger.info("Обновлена лекция:", lecture.name);
-                                    res.send(true);
-                                }
-                            });
-                        }
-                        else {
-                            res.send({warning: "Выбранная аудитория не может вместить количество студентов в этой школе"});
-                        }
-                    }
-                });
-            }
-        });
+        
+        if (lecture.timeStart >= lecture.timeEnd) {
+            res.send({ warning: "Некорректное время лекции"});
+        } 
+        else {
+            isCapacityMoreThanStudents(lecture, res);
+        }
     }
+}
+
+var isCapacityMoreThanStudents = function(lecture, res) {
+    var capacity = 0;
+    var students = 1;
+    database.all("SELECT capacity FROM Classrooms WHERE id = " + lecture.idRoom, function(err, rows) {
+        if (err || !rows) {
+            logger.error("GET capacity FROM Classrooms", err)
+            return({error: "Ошибка сервера. Выполнить операцию не удалось"});
+        }
+        else if (rows) {
+            capacity = rows[0].capacity;
+
+            database.all("SELECT students FROM SCHOOLS WHERE id = " + lecture.idSchool, function(err, rows) {
+                if (err || !rows) {
+                    logger.error("GET students FROM SCHOOLS", err)
+                    return({error: "Ошибка сервера. Выполнить операцию не удалось"});
+                }
+                else if (rows) {
+                    students = rows[0].students;
+                    if (capacity >= students) {
+                        isLectorFree(lecture, res)
+                    }
+                    else {
+                        res.send({warning: "Выбранная аудитория не может вместить количество студентов в этой школе"});
+                    }
+                }
+            })
+        }
+    });
+}
+
+var isLectorFree = function(lecture, res) {
+    lecture.id = lecture.id ? lecture.id : null;
+    database.all("SELECT schools.name as school, Classrooms.name, schedule.name as room FROM Schedule \
+                    left join schools \
+                    on schedule.idSchool = schools.id \
+                    left join Classrooms \
+                    on schedule.idRoom = Classrooms.id \
+                            WHERE schedule.idLector == " + lecture.idLector + 
+                                                                " AND ( \
+                                                                    ( \
+                                                                        (timeStart <= '" + lecture.timeStart + "' AND timeEnd >= '" + lecture.timeStart + "') OR \
+                                                                        (timeStart <= '" + lecture.timeEnd + "' AND timeEnd >= '" + lecture.timeEnd + "') \
+                                                                    )" +
+                                                                    " OR \
+                                                                    ( \
+                                                                        (timeStart >= '" + lecture.timeStart + "' AND timeEnd >= '" + lecture.timeStart + "') AND \
+                                                                        (timeStart <= '" + lecture.timeEnd + "' AND timeEnd <= '" + lecture.timeEnd + "') \
+                                                                    ) \
+                                                                ) AND schedule.id != " + lecture.id, function(err, rows) {
+        if (err) {
+            logger.error("GET Lector's time FROM Schedule", err)
+            res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
+        }
+        else {
+            if (rows.length) {
+                res.send({warning: "Лектор в это время занят: " + rows[0].name + " - " + rows[0].school + " (" + rows[0].room + ")"});
+            }
+            else
+                isSchoolFree(lecture, res);
+        }
+    })
+}
+
+var isSchoolFree = function(lecture, res) {
+    database.all("SELECT (lectors.lastname || ' ' || lectors.name) as lector, Classrooms.name, schedule.name as room FROM Schedule \
+                    left join lectors \
+                    on schedule.idLector = lectors.id \
+                    left join Classrooms \
+                    on schedule.idRoom = Classrooms.id \
+                            WHERE schedule.idSchool == " + lecture.idSchool + 
+                                                                " AND ( \
+                                                                    ( \
+                                                                        (timeStart <= '" + lecture.timeStart + "' AND timeEnd >= '" + lecture.timeStart + "') OR \
+                                                                        (timeStart <= '" + lecture.timeEnd + "' AND timeEnd >= '" + lecture.timeEnd + "') \
+                                                                    )" +
+                                                                    " OR \
+                                                                    ( \
+                                                                        (timeStart >= '" + lecture.timeStart + "' AND timeEnd >= '" + lecture.timeStart + "') AND \
+                                                                        (timeStart <= '" + lecture.timeEnd + "' AND timeEnd <= '" + lecture.timeEnd + "') \
+                                                                    ) \
+                                                                ) AND schedule.id != " + lecture.id, function(err, rows) {
+        if (err) {
+            logger.error("GET Lector's time FROM Schedule", err)
+            res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
+        }
+        else {
+            if (rows.length) {
+                res.send({warning: "У школы уже есть лекция в это время: " + rows[0].name + " - " + rows[0].room + " (" + rows[0].lector + ")"});
+            }
+            else
+                isRoomFree(lecture, res);
+        }
+    })
+}
+
+var isRoomFree = function(lecture, res) {
+    console.log(lecture);
+    database.all("SELECT (lectors.lastname || ' ' || lectors.name) as lector, schools.name, schedule.name as school FROM Schedule \
+                    left join lectors \
+                    on schedule.idLector = lectors.id \
+                    left join schools \
+                    on schedule.idSchool = schools.id \
+                            WHERE schedule.idRoom == " + lecture.idRoom + 
+                                                                " AND ( \
+                                                                    ( \
+                                                                        (timeStart <= '" + lecture.timeStart + "' AND timeEnd >= '" + lecture.timeStart + "') OR \
+                                                                        (timeStart <= '" + lecture.timeEnd + "' AND timeEnd >= '" + lecture.timeEnd + "') \
+                                                                    )" +
+                                                                    " OR \
+                                                                    ( \
+                                                                        (timeStart >= '" + lecture.timeStart + "' AND timeEnd >= '" + lecture.timeStart + "') AND \
+                                                                        (timeStart <= '" + lecture.timeEnd + "' AND timeEnd <= '" + lecture.timeEnd + "') \
+                                                                    ) \
+                                                                ) AND schedule.id != " + lecture.id, function(err, rows) {
+        if (err) {
+            logger.error("GET Lector's time FROM Schedule", err)
+            res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
+        }
+        else {
+            if (rows.length) {
+                res.send({warning: "Аудитория на это время занята: " + rows[0].name + " - " + rows[0].school + " (" + rows[0].lector + ")"});
+            }
+            else
+                setLectureInDB(lecture, res);
+        }
+    })
+}
+
+var setLectureInDB = function(lecture, res) {
+    var query = "";
+    if (lecture.id) {
+        query = "UPDATE Schedule set (name, idLector, idSchool, idRoom, date, timeStart, timeEnd) = (?, ?, ?, ?, ?, ?, ? ) WHERE id = " + lecture.id;
+    }
+    else {
+        query = "INSERT into Schedule (name, idLector, idSchool, idRoom, date, timeStart, timeEnd) values (?, ?, ?, ?, ?, ?, ?)";
+    }
+    database.run(query, [lecture.name, lecture.idLector, lecture.idSchool, lecture.idRoom, lecture.date, lecture.timeStart, lecture.timeEnd], function(err, row) {
+        if (err) {
+            logger.error(query, ":", err);
+            res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
+        }
+        else {
+            logger.info("Обновлена лекция:", lecture.name);
+            res.send(true);
+        }
+    });
 }
 
 var removeLecture = function(req, res) {
@@ -103,7 +206,7 @@ var removeLecture = function(req, res) {
 
 var getSchedule = function(req, res) {
 	var lectures = [];
-	database.all("SELECT schedule.id, schedule.name, (lectors.lastname || ' ' || lectors.name) as lector, schools.name as school, Classrooms.name as room, schedule.date FROM Schedule \
+	database.all("SELECT schedule.id, schedule.name, (lectors.lastname || ' ' || lectors.name) as lector, schools.name as school, Classrooms.name as room, schedule.timeStart, schedule.timeEnd, schedule.date FROM Schedule \
                   left join lectors \
                   on schedule.idLector = lectors.id \
                   left join schools \
