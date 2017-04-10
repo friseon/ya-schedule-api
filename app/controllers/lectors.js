@@ -95,7 +95,6 @@ var getLectors = function(req, res) {
             else {
                 rows.forEach(function (row) {
                     lector = new Lector(row);
-                    lector.fullname = lector.fullname();
                     lectors.push(lector);
                 });
                 res.send(lectors);

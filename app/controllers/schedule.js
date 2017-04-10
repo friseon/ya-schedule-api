@@ -11,6 +11,7 @@ module.exports = function(app) {
     app.get('/getSchedule', getSchedule); 
 };
 
+// получение лекции
 var getLecture = function(req, res) {
     if (req.session.user) {
         var id = req.params.id;
@@ -26,6 +27,7 @@ var getLecture = function(req, res) {
     }
 }
 
+// добавляем/обновляем лекцию
 var updateLecture = function(req, res) {
     if (req.session.user) {
         var lecture = req.body;
@@ -39,6 +41,7 @@ var updateLecture = function(req, res) {
     }
 }
 
+// проверка на вмещаемость аудитории
 var isCapacityMoreThanStudents = function(lecture, res) {
     var capacity = 0;
     var students = 1;
@@ -69,7 +72,9 @@ var isCapacityMoreThanStudents = function(lecture, res) {
     });
 }
 
+// проверка свободен ли лектор
 var isLectorFree = function(lecture, res) {
+    // если новая лекция, то не пугаем бд
     lecture.id = lecture.id ? lecture.id : null;
     database.all("SELECT schools.name as school, Classrooms.name, schedule.name as room FROM Schedule \
                     left join schools \
@@ -102,6 +107,7 @@ var isLectorFree = function(lecture, res) {
     })
 }
 
+// проверка занятости в школе
 var isSchoolFree = function(lecture, res) {
     database.all("SELECT (lectors.lastname || ' ' || lectors.name) as lector, Classrooms.name, schedule.name as room FROM Schedule \
                     left join lectors \
@@ -134,8 +140,8 @@ var isSchoolFree = function(lecture, res) {
     })
 }
 
+// проверка занятости аудитории
 var isRoomFree = function(lecture, res) {
-    console.log(lecture);
     database.all("SELECT (lectors.lastname || ' ' || lectors.name) as lector, schools.name, schedule.name as school FROM Schedule \
                     left join lectors \
                     on schedule.idLector = lectors.id \
@@ -167,6 +173,7 @@ var isRoomFree = function(lecture, res) {
     })
 }
 
+// записиь в БД
 var setLectureInDB = function(lecture, res) {
     var query = "";
     if (lecture.id) {
@@ -187,6 +194,7 @@ var setLectureInDB = function(lecture, res) {
     });
 }
 
+// удаление лекции
 var removeLecture = function(req, res) {
     if (req.session.user) {
         var lecture = req.body;
@@ -204,6 +212,7 @@ var removeLecture = function(req, res) {
     }
 }
 
+// получение расписания
 var getSchedule = function(req, res) {
 	var lectures = [];
 	database.all("SELECT schedule.id, schedule.name, (lectors.lastname || ' ' || lectors.name) as lector, schools.name as school, Classrooms.name as room, schedule.timeStart, schedule.timeEnd, schedule.date FROM Schedule \

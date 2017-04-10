@@ -48,7 +48,7 @@
 	</thead>
 	<tbody>
 		<tr ng-repeat="item in model.lectors">
-			<td>{{item.fullname}}</td>
+			<td class="nowrap">{{item.fullname}}</td>
 			<td>{{item.description}}</td>
 			<td><button ng-click="model.select(item)"><i class="glyphicon glyphicon-pencil"></i></button></td>
 			<td><button ng-click="model.remove(item)"><i class="glyphicon glyphicon-trash"></i></button></td>
