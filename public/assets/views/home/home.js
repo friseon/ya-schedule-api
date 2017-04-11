@@ -17,6 +17,7 @@
             var getSchedule = function() {
                 appService.getSchedule().then(function(data) {
                     model.schedule = data;
+                    console.log(data);
                 });
             }
 

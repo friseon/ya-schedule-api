@@ -10,7 +10,7 @@
 	<div class="form-group">
 		<label class="col-sm-2 control-label">Школа</label>
 		<div class="col-sm-10">
-			<select class="form-control" name="school" ng-model="model.lecture.idSchool" required>
+			<select class="form-control" name="school" ng-model="model.lecture.idSchool" multiple required>
 				<option ng-repeat="school in model.schools" ng-value="{{school.id}}">{{school.name}} ({{school.students}})</option>
 			</select>
 		</div>

@@ -64,6 +64,7 @@
             };
 
             model.isLectureFull = function() {
+                console.log(model.lecture);
                 return model.lecture && model.lecture.name && model.lecture.idSchool && model.lecture.idLector && model.lecture.idRoom &&
                        model.lecture.date && model.lecture.timeStart && model.lecture.timeEnd
             };

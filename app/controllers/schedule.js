@@ -21,7 +21,7 @@ var getLecture = function(req, res) {
                 res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
             }
             else if (rows) {
-                res.send(new Lecture(rows[0]));
+                res.send(rows[0]);
             }
         });
     }
@@ -30,7 +30,7 @@ var getLecture = function(req, res) {
 // добавляем/обновляем лекцию
 var updateLecture = function(req, res) {
     if (req.session.user) {
-        var lecture = req.body;
+        var lecture = new Lecture(req.body);
         
         if (lecture.timeStart >= lecture.timeEnd) {
             res.send({ warning: "Некорректное время лекции"});
@@ -52,19 +52,18 @@ var isCapacityMoreThanStudents = function(lecture, res) {
         }
         else if (rows) {
             capacity = rows[0].capacity;
-
-            database.all("SELECT students FROM SCHOOLS WHERE id = " + lecture.idSchool, function(err, rows) {
+            database.all("SELECT sum(students) as allStudents FROM SCHOOLS WHERE id in (" + lecture.idSchool.split(", ") + ")", function(err, rows) {
                 if (err || !rows) {
                     logger.error("GET students FROM SCHOOLS", err)
                     return({error: "Ошибка сервера. Выполнить операцию не удалось"});
                 }
                 else if (rows) {
-                    students = rows[0].students;
+                    students = rows[0].allStudents;
                     if (capacity >= students) {
                         isLectorFree(lecture, res)
                     }
                     else {
-                        res.send({warning: "Выбранная аудитория не может вместить количество студентов в этой школе"});
+                        res.send({warning: "Выбранная аудитория не может вместить всех студентов"});
                     }
                 }
             })
@@ -114,7 +113,7 @@ var isSchoolFree = function(lecture, res) {
                     on schedule.idLector = lectors.id \
                     left join Classrooms \
                     on schedule.idRoom = Classrooms.id \
-                            WHERE schedule.idSchool == " + lecture.idSchool + 
+                            WHERE schedule.idSchool in (" + lecture.idSchool + ")" +
                                                                 " AND ( \
                                                                     ( \
                                                                         (timeStart <= '" + lecture.timeStart + "' AND timeEnd >= '" + lecture.timeStart + "') OR \
@@ -215,24 +214,46 @@ var removeLecture = function(req, res) {
 // получение расписания
 var getSchedule = function(req, res) {
 	var lectures = [];
-	database.all("SELECT schedule.id, schedule.name, (lectors.lastname || ' ' || lectors.name) as lector, schools.name as school, Classrooms.name as room, schedule.timeStart, schedule.timeEnd, schedule.date FROM Schedule \
+	database.all("SELECT schedule.id, schedule.name, (lectors.lastname || ' ' || lectors.name) as lector, \
+                  schedule.idSchool, \
+                  Classrooms.name as room, schedule.timeStart, schedule.timeEnd, schedule.date FROM Schedule \
                   left join lectors \
                   on schedule.idLector = lectors.id \
                   left join schools \
                   on schedule.idSchool = schools.id \
                   left join Classrooms \
                   on schedule.idRoom = Classrooms.id \
-                  ORDER BY schedule.date ASC", function(err, rows) {
+                  ORDER BY schedule.date, schedule.timeStart ASC", function(err, rows) {
 	    if (err) {
             logger.error("GET ALL FROM Schedule", err)
 	    	res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
 	    }
         else {
-            rows.forEach(function (row) {
-                lecture = row;
-                lectures.push(lecture);
+            var ctr = 0;
+            rows.forEach(function(row, index, array){
+                asynchronous(function(data){
+                    lecture = row;
+                    lectures.push(getSchoolsName(lecture));
+                    ctr++;
+                    if (ctr === array.length) {
+                        res.send(lectures);
+                    }
+                })
             });
-            res.send(lectures);
         }
 	});
+}
+
+// возвращаем названия школ вместо id
+var getSchoolsName = function(lecture) {
+    database.all("SELECT name FROM SCHOOLS WHERE id in (" + lecture.idSchool + ")", function(err, rows) {
+        if (err) {
+            logger.error("GET Schools'n names by Id: ", err)
+            // res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
+        }
+        else {
+            lecture.idSchool = rows;
+            return lecture;
+        }
+    })
 }
