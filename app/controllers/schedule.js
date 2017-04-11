@@ -211,16 +211,16 @@ var removeLecture = function(req, res) {
     }
 }
 
+                  // left join schools \
+                  // on schedule.idSchool = schools.id \
 // получение расписания
 var getSchedule = function(req, res) {
 	var lectures = [];
 	database.all("SELECT schedule.id, schedule.name, (lectors.lastname || ' ' || lectors.name) as lector, \
-                  schedule.idSchool, \
+                  (SELECT GROUP_CONCAT(w.name) FROM SCHOOLS as w WHERE id in ( schedule.idSchool )) as schools, schedule.idSchool, \
                   Classrooms.name as room, schedule.timeStart, schedule.timeEnd, schedule.date FROM Schedule \
                   left join lectors \
                   on schedule.idLector = lectors.id \
-                  left join schools \
-                  on schedule.idSchool = schools.id \
                   left join Classrooms \
                   on schedule.idRoom = Classrooms.id \
                   ORDER BY schedule.date, schedule.timeStart ASC", function(err, rows) {
@@ -229,31 +229,41 @@ var getSchedule = function(req, res) {
 	    	res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
 	    }
         else {
-            var ctr = 0;
-            rows.forEach(function(row, index, array){
-                asynchronous(function(data){
-                    lecture = row;
-                    lectures.push(getSchoolsName(lecture));
-                    ctr++;
-                    if (ctr === array.length) {
-                        res.send(lectures);
-                    }
-                })
+            console.log(rows.length);
+            getSchoolsName();
+            rows.forEach(function (row) {
+                lecture = row;
+                lectures.push(lecture);
             });
+            res.send(lectures);
         }
 	});
 }
 
 // возвращаем названия школ вместо id
-var getSchoolsName = function(lecture) {
-    database.all("SELECT name FROM SCHOOLS WHERE id in (" + lecture.idSchool + ")", function(err, rows) {
+var getSchoolsName = function() {
+    var qqqq = '1, 2, 3';
+    // var query = "SELECT classrooms.name, GROUP_CONCAT(schools.name) as b FROM classrooms LEFT JOIN (SELECT w.name FROM SCHOOLS as w WHERE id in (1, 2, 3)) as schools";
+    // schedule.idSchool
+    var query = "SELECT schedule.name, schedule.idSchool, (SELECT json_group_array(w.name) FROM SCHOOLS as w WHERE id in ( schedule.idSchool ) order by w.name) as schools FROM schedule";
+    database.all(query, function(err, rows) {
         if (err) {
             logger.error("GET Schools'n names by Id: ", err)
             // res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
         }
         else {
-            lecture.idSchool = rows;
-            return lecture;
+            console.log(rows);
+        }
+    })
+    var query = "SELECT json_group_array(w.name) as schools FROM SCHOOLS as w WHERE id in (" + qqqq + ") order by w.name";
+    database.all(query, function(err, rows) {
+        if (err) {
+            logger.error("GET Schools'n names by Id: ", err)
+            // res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
+        }
+        else {
+            console.log("!");
+            console.log(rows);
         }
     })
 }
