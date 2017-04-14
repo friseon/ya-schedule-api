@@ -222,7 +222,7 @@ var getSchedule = function(req, res) {
                   on schedule.idSchool = schools.id \
                   left join Classrooms \
                   on schedule.idRoom = Classrooms.id \
-                  ORDER BY schedule.date ASC", function(err, rows) {
+                  ORDER BY schedule.date, schedule.timeStart ASC", function(err, rows) {
 	    if (err) {
             logger.error("GET ALL FROM Schedule", err)
 	    	res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
