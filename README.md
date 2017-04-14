@@ -24,3 +24,7 @@ https://nodejs.org
 
 #### Доступ по адресу:
 http://127.0.0.1:9250
+
+#### Login
+
+`` admin/qwe123 ``
