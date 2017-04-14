@@ -10,11 +10,37 @@
     	var service = {
             login: login,
             getSchedule: getSchedule,
+            getLector: getLector,
+            getClassRoom: getClassRoom,
             isLogin: isLogin,
             logout: logout
     	}
 
     	return service;
+
+        function getLector(id) {
+            return $http.get('/lector/' + id, {
+                params: {
+                    id: id
+                }
+            }).then(function(result) {
+                return result ? result.data : false;
+            }, function(err) {
+                console.log(err);
+            })
+        }
+
+        function getClassRoom(id) {
+            return $http.get('/classRoom/' + id, {
+                params: {
+                    id: id
+                }
+            }).then(function(result) {
+                return result ? result.data : false;
+            }, function(err) {
+                console.log(err);
+            })
+        }
 
         function getSchedule() {
             return $http.get('/getSchedule').then(function(result) {

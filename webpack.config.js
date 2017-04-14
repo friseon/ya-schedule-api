@@ -8,8 +8,7 @@ module.exports = {
   context: __dirname,
   devtool: "source-map",
   entry: {
-  	bundle: bundle,
-  	adminBundle: adminBundle
+  	bundle: bundle
   },
   output: {
     path: __dirname + "/dist",

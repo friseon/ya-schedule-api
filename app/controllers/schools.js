@@ -7,7 +7,7 @@ module.exports = function(app) {
     app.post('/addSchool', addSchool);
     app.post('/updateSchool', updateSchool);
     app.post('/removeSchool', removeSchool);
-    app.get('/getSchools', getSchools); 
+    app.get('/getSchools', getSchools);
 };
 
 var addSchool = function(req, res) {

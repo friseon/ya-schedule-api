@@ -7,10 +7,26 @@ module.exports = function(app) {
     app.post('/addClassRoom', addClassRoom);
     app.post('/updateClassRoom', updateClassRoom);
     app.post('/removeClassRoom',removeClassRoom);
-    app.get('/getClassRooms', getClassRooms); 
+    app.get('/getClassRooms', getClassRooms);
+    app.get('/classRoom/:id', getClassRoom);
 };
 
 // Controlls
+
+// получение информации об аудитории
+var getClassRoom = function(req, res) {
+    var id = req.params.id;
+    database.all("SELECT * FROM classRooms WHERE id = " + id, function(err, rows) {
+        if (err) {
+            logger.error("GET classRoom FROM classRooms", err)
+            res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
+        }
+        else if (rows) {
+            res.send(new classRoom(rows[0]));
+        }
+    });
+}
+
 var addClassRoom = function(req, res) {
     if (req.session.user) {
         var newRoom = req.body;

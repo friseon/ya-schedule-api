@@ -7,10 +7,26 @@ module.exports = function(app) {
     app.post('/addLector', addLector);
     app.post('/updateLector', updateLector);
     app.post('/removeLector', removeLector);
-    app.get('/getLectors', getLectors); 
+    app.get('/getLectors', getLectors);
+    app.get('/lector/:id', getLector);
 };
 
 // Controlls
+
+// получение информации о лекторе
+var getLector = function(req, res) {
+    var id = req.params.id;
+    database.all("SELECT * FROM Lectors WHERE id = " + id, function(err, rows) {
+        if (err) {
+            logger.error("GET Lector FROM Lectors", err)
+            res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
+        }
+        else if (rows) {
+            res.send(new Lector(rows[0]));
+        }
+    });
+}
+
 var addLector = function(req, res) {
     if (req.session.user) {
         var newLector = req.body;
