@@ -22,9 +22,9 @@
 		<tbody>
 			<tr ng-repeat="lecture in model.schedule">
 				<td>{{lecture.name}}</td>
-				<td>{{lecture.lector}}</td>
+				<td><span class="link" ng-click="model.openLector(lecture.idLector)">{{lecture.lector}}</span></td>
 				<td>{{lecture.school}}</td>
-				<td>{{lecture.room}}</td>
+				<td><span class="link" ng-click="model.openClassRoom(lecture.idRoom)">{{lecture.room}}</span></td>
 				<td>{{lecture.date | date: "dd.MM.yyyy"}}</td>
 				<td class="nowrap">{{lecture.timeStart | date: "HH:mm"}} - {{lecture.timeEnd | date: "HH:mm"}}</td>
 			</tr>

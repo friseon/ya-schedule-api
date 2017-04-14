@@ -215,7 +215,7 @@ var removeLecture = function(req, res) {
 // получение расписания
 var getSchedule = function(req, res) {
 	var lectures = [];
-	database.all("SELECT schedule.id, schedule.name, (lectors.lastname || ' ' || lectors.name) as lector, schools.name as school, Classrooms.name as room, schedule.timeStart, schedule.timeEnd, schedule.date FROM Schedule \
+	database.all("SELECT schedule.id, schedule.name, (lectors.lastname || ' ' || lectors.name) as lector, schools.name as school, Classrooms.name as room, schedule.idLector, schedule.idRoom, schedule.timeStart, schedule.timeEnd, schedule.date FROM Schedule \
                   left join lectors \
                   on schedule.idLector = lectors.id \
                   left join schools \
