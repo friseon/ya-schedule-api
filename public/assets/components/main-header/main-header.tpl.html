@@ -1,22 +1,17 @@
-<div class="navbar navbar-default">
-	<div class="container-fluid">
-		<div class="navbar-header">
-			<ul class="nav nav-pills">
-				<li class="navbar-btn" ng-click="model.linkTo('home')" ng-class="{'active': model.isActive('home')}">
-					<span>Расписание</span>
-				</li>
-				<li class="navbar-btn" ng-if="model.isLogin" ng-click="model.linkTo('admin')" ng-class="{'active': model.isActive('admin')}">
-					<span>Управление</span>
-				</li>
-				<li class="navbar-btn" ng-if="!model.isLogin" ng-click="model.linkTo('login')" ng-class="{'active': model.isActive('login')}">
-					<span>Вход</span>
-				</li>
-			</ul>
-		</div>
-		<div class="collapse navbar-collapse">
-			<p class="navbar-text navbar-right">
-				<span class="navbar-link" ng-if="model.isLogin" ng-click="model.logout()">Выход</span>
-			</p>
-		</div>
+<div class="navbar header__navbar">
+	<a class="ya-logo" href="https://yandex.ru">Яндекс</a>
+	<ul class="navbar__panel">
+		<li class="navbar__item" ng-click="model.linkTo('home')" ng-class="{'active': model.isActive('home')}">
+			Расписание
+		</li>
+		<li class="navbar__item" ng-if="model.isLogin" ng-click="model.linkTo('admin')" ng-class="{'active': model.isActive('admin')}">
+			Управление
+		</li>
+		<li class="navbar__item" ng-if="!model.isLogin" ng-click="model.linkTo('login')" ng-class="{'active': model.isActive('login')}">
+			Вход
+		</li>
+	</ul>
+	<div class="navbar__exit">
+		<span ng-if="model.isLogin" ng-click="model.logout()">Выход</span>
 	</div>
 </div>

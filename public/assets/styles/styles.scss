@@ -31,9 +31,36 @@ body {
 	&.title_size_l {
 		font-size: 30px;
 	}
+	&.title_size_xl {
+		font-size: 36px;
+	}
+}
+
+.ya-logo {
+	position: absolute;
+	top: 50%;
+	left: 44px;;
+	transform: translateY(-50%);
+	display: inline-block;
+	height: 26px;
+	width: 60px;
+	background-image: url(../img/ya_logo.png);
+	background-size: 100%;
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	overflow: hidden;
+	text-indent: 100%;
 }
 
 // shedule
+
+.shedule__container {
+	display: block;
+	margin: 70px auto;
+	padding: 0 20px;
+	min-width: 1000px;
+	max-width: 1170px;
+}
 
 .table {
 	font-weight: normal;
@@ -87,7 +114,7 @@ body {
 		display: block;
 		position: absolute;
 		top: 50%;
-		transform: translateY(-50%);
+		transform: translateY(-3px);
 		left: 0;
 		height: 3px;
 		width: 100%;
@@ -112,9 +139,17 @@ body {
 // modals
 
 .modal {
+	&-dialog {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translateY(-50%) translateX(-50%) !important;
+	}
 	&-content {
-		border-radius: 2px;
-		border-bottom: 4px #E61400 solid;
+		border-radius: 0;
+		border: 1px solid #bfbfbf;
+    	background-color: #fff;
+    	box-shadow: none;
 	}
 	&-title {
 		margin-top: 40px;
@@ -134,4 +169,8 @@ body {
 		padding: 0 25px;
 		margin-bottom: 40px;
 	}
+}
+
+@media screen and (max-width: 1280px) {
+
 }
