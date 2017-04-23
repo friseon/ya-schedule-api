@@ -2,13 +2,17 @@
 	<h2 class="title title_size_xl">Расписание</h2>
 	<table class="table--shedule">
 		<tbody>
-			<tr ng-repeat="month in model.months">
-				<td class="month__title" colspan="6"><span>{{month}}</span></td>
-			</tr>
 			<tr ng-repeat="lectures in model.schedule">
-				<td colspan="6">
+				<td>
 					<table class="table--lectures">
 						<tbody>
+							<tr>
+								<td class="section__separator" colspan="6">
+									<div class="month__title">
+										<span>{{model.months[$index]}}</span>
+									</div>
+								</td>
+							</tr>
 							<tr ng-repeat="lecture in lectures">
 								<td class="lecture__day">{{lecture.date | date: "dd"}}</td>
 								<td class="lecture__title">{{lecture.name}}</td>

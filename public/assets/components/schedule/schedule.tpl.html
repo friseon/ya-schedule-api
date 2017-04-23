@@ -1,5 +1,4 @@
-<h1>{{model.title}}</h1>
-<hr>
+<h2 class="title title_size_xl">{{model.title}}</h2>
 <form class="form-horizontal">
 	<div class="form-group">
 		<label class="col-sm-2 control-label">Наименование</label>
@@ -56,39 +55,46 @@
 	</div>
 	<div class="form-group">
 	    <div class="col-sm-offset-2 col-sm-10">
-			<button type="submit" class="btn btn-default" ng-if="!model.isSelect" ng-click="model.addLecture(model.lecture)" ng-disabled="!model.isLectureFull()">Добавить</button>
-			<button type="submit" class="btn btn-default" ng-if="model.isSelect" ng-click="model.update(model.lecture)" ng-disabled="!model.isLectureFull()">Сохранить</button>
+			<button type="submit" class="btn btn-yellow" ng-if="!model.isSelect" ng-click="model.addLecture(model.lecture)" ng-disabled="!model.isLectureFull()">Добавить</button>
+			<button type="submit" class="btn btn-yellow" ng-if="model.isSelect" ng-click="model.update(model.lecture)" ng-disabled="!model.isLectureFull()">Сохранить</button>
 			<button class="btn btn-default" ng-if="model.isSelect" ng-click="model.cancel()">Отменить</button>
 	    </div>
 	</div>
 </form>
 
 
-<h2>Расписание</h2>
-
-<table class="table--shedule">
-	<tbody>
-		<tr ng-repeat="month in model.months">
-			<td class="month__title" colspan="6"><span>{{month}}</span></td>
-		</tr>
-		<tr ng-repeat="lectures in model.schedule">
-			<td colspan="6">
-				<table class="table--lectures">
-					<tbody>
-						<tr ng-repeat="lecture in lectures">
-							<td class="lecture__day">{{lecture.date | date: "dd"}}</td>
-							<td class="lecture__title">{{lecture.name}}</td>
-							<td class="lecture__speaker"><span class="link" ng-click="model.openLector(lecture.idLector)">{{lecture.lector}}</span></td>
-							<td class="lecture__school">{{lecture.school}}</td>
-							<td class="lecture__room"><span class="link" ng-click="model.openClassRoom(lecture.idRoom)">{{lecture.room}}</span></td>
-							<td class="lecture__time">{{lecture.timeStart | date: "HH:mm"}} - {{lecture.timeEnd | date: "HH:mm"}}</td>
-						</tr>
-					</tbody>
-				</table>
-			</td>
-		</tr>
-		<tr ng-if="model.schedule.length === 0">
-			<td colspan="6">Лекций нет</td>
-		</tr>
-	</tbody>
-</table>
+<div class="shedule__container">
+	<h2 class="title title_size_xl">Расписание</h2>
+	<table class="table--shedule">
+		<tbody>
+			<tr ng-repeat="lectures in model.schedule">
+				<td>
+					<table class="table--lectures">
+						<tbody>
+							<tr>
+								<td class="section__separator" colspan="8">
+									<div class="month__title">
+										<span>{{model.months[$index]}}</span>
+									</div>
+								</td>
+							</tr>
+							<tr ng-repeat="lecture in lectures">
+								<td class="lecture__day">{{lecture.date | date: "dd"}}</td>
+								<td class="lecture__title">{{lecture.name}}</td>
+								<td class="lecture__speaker"><span class="link" ng-click="model.openLector(lecture.idLector)">{{lecture.lector}}</span></td>
+								<td class="lecture__school">{{lecture.school}}</td>
+								<td class="lecture__room"><span class="link" ng-click="model.openClassRoom(lecture.idRoom)">{{lecture.room}}</span></td>
+								<td class="lecture__time">{{lecture.timeStart | date: "HH:mm"}} - {{lecture.timeEnd | date: "HH:mm"}}</td>
+								<td class="td--button"><button class="btn btn-default" ng-click="model.select(lecture)"><i class="glyphicon glyphicon-pencil"></i></button></td>
+								<td class="td--button"><button class="btn btn-default" ng-click="model.remove(lecture)"><i class="glyphicon glyphicon-trash"></i></button></td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+			<tr ng-if="model.schedule.length === 0">
+				<td colspan="6">Лекций нет</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
