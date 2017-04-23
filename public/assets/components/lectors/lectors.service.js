@@ -56,6 +56,22 @@
                 console.log(err);
             })
         }
+
+        // получение лекторов из расписания
+        function getLectorsFromShedule() {
+            return $http.get('/getLectorsFromShedule').then(function(result) {
+                if (result && result.data && !result.data.code) {
+                    return result.data;
+                }
+                else {
+                    console.error("Error. Service.getLectorsFromShedule");
+                    console.error(result.data);
+                    return [];
+                }
+            }, function(err) {
+                console.log(err);
+            })
+        };
     }
     
 })()

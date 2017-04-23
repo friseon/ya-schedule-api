@@ -159,6 +159,12 @@ textarea {
 	height: 40px;
 }
 
+.form-control {
+	&--m {
+		width: 200px;
+	}
+}
+
 // shedule
 
 .lecture {

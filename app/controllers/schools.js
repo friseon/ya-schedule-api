@@ -8,6 +8,7 @@ module.exports = function(app) {
     app.post('/updateSchool', updateSchool);
     app.post('/removeSchool', removeSchool);
     app.get('/getSchools', getSchools);
+    app.get('/getSchoolsFromShedule', getSchoolsFromShedule);
 };
 
 var addSchool = function(req, res) {
@@ -80,14 +81,35 @@ var removeSchool = function(req, res) {
     }
 }
 
+// получить все школы
 var getSchools = function(req, res) {
-    if (req.session.user) {
-    	var schools = [];
-    	database.all("SELECT id, name, students FROM Schools", function(err, rows) {
-    	    if (err) {
-                logger.error("GET ALL FROM Schools", err)
-    	    	res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
-    	    }
+	var schools = [];
+	database.all("SELECT id, name, students FROM Schools", function(err, rows) {
+	    if (err) {
+            logger.error("GET ALL FROM Schools", err)
+	    	res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
+	    }
+        else {
+            rows.forEach(function (row) {
+                school = new School(row);
+                schools.push(school);
+            });
+            res.send(schools);
+        }
+	});
+}
+
+
+// получить только те школы, которые есть в расписании
+var getSchoolsFromShedule = function(req, res) {
+    var schools = [];
+    database.all("SELECT GROUP_CONCAT(idSchool) from Schedule" ,function(err, rows) {
+        var ids = rows[0]["GROUP_CONCAT(idSchool)"];
+        database.all("SELECT id, name, students FROM Schools WHERE id in (" + ids + ")", function(err, rows) {
+            if (err) {
+                logger.error("GET Schools FROM Schedule", err)
+                res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
+            }
             else {
                 rows.forEach(function (row) {
                     school = new School(row);
@@ -95,6 +117,6 @@ var getSchools = function(req, res) {
                 });
                 res.send(schools);
             }
-    	});
-    }
+        });
+    })
 }
