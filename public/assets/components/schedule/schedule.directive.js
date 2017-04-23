@@ -15,10 +15,10 @@
         };
 
         controller.$inject = [
-            '$scope', 'scheduleService', 'schoolsService', 'lectorsService', 'classRoomsService', 'appService', 'scheduleConstants'
+            '$scope', 'scheduleService', 'schoolsService', 'lectorsService', 'classRoomsService', 'appService', 'scheduleConstants', '$uibModal', 'modalsConstants'
         ];
 
-        function controller($scope, scheduleService, schoolsService, lectorsService, classRoomsService, appService, scheduleConstants) {
+        function controller($scope, scheduleService, schoolsService, lectorsService, classRoomsService, appService, scheduleConstants, $uibModal, modalsConstants) {
 
             var model = this;
 
@@ -34,6 +34,46 @@
                 else
                     model.title = "Редактирование лекции";
             });
+
+            model.openLector = function (id) {
+                var modalInstance = 
+                    $uibModal.open({
+                        templateUrl: modalsConstants.lectorInfoTpl,
+                        controller: 'modalLectorInfoCtrl',
+                        controllerAs: 'ctrl',
+                        resolve: {
+                            id: function () {
+                              return id;
+                            } 
+                        }
+                });
+
+                modalInstance.result.then(function () {
+
+                }, function () {
+
+                });
+            };
+
+            model.openClassRoom = function (id) {
+                var modalInstance = 
+                    $uibModal.open({
+                        templateUrl: modalsConstants.classRoomInfoTpl,
+                        controller: 'modalClassRoomInfoCtrl',
+                        controllerAs: 'ctrl',
+                        resolve: {
+                            id: function () {
+                              return id;
+                            } 
+                        }
+                });
+
+                modalInstance.result.then(function () {
+
+                }, function () {
+                    
+                });
+            };
 
             // обновление даты для времени лекции
             var updateDate = function(date) {
