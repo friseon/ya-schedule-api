@@ -15,15 +15,16 @@
         };
 
         controller.$inject = [
-            '$scope', 'scheduleService', 'schoolsService', 'lectorsService', 'classRoomsService'
+            '$scope', 'scheduleService', 'schoolsService', 'lectorsService', 'classRoomsService', 'appService', 'scheduleConstants'
         ];
 
-        function controller($scope, scheduleService, schoolsService, lectorsService, classRoomsService) {
+        function controller($scope, scheduleService, schoolsService, lectorsService, classRoomsService, appService, scheduleConstants) {
 
             var model = this;
 
             model.schedule = [];
             model.lecture = {};
+            model.months = [];
 
             model.isSelect = false;
 
@@ -123,7 +124,11 @@
 
             // получение расписания
             var getSchedule = function() {
-                scheduleService.getSchedule().then(function(data){
+                appService.getSchedule().then(function(data) {
+                    model.months = [];
+                    for (var key in data) {
+                        model.months.push(scheduleConstants.months[key.split(".")[0]] + " " + key.split(".")[1]);
+                    }
                     model.schedule = data;
                 });
             };

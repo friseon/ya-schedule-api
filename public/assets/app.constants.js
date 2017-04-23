@@ -3,56 +3,20 @@
     angular
         .module('schedule')
         .constant('scheduleConstants', {
-            months: [
-            	{
-				   id: 1,
-				   name: 'January'
-				}, 
-				{
-				   id: 2,
-				   name: 'February'
-				}, 
-				{
-				   id: 3,
-				   name: 'March'
-				}, 
-				{
-				   id: 4,
-				   name: 'April'
-				}, 
-				{
-				   id: 5,
-				   name: 'May'
-				}, 
-				{
-				   id: 6,
-				   name: 'June'
-				}, 
-				{
-				   id: 7,
-				   name: 'July'
-				}, 
-				{
-				   id: 8,
-				   name: 'August'
-				}, 
-				{
-				   id: 9,
-				   name: 'September'
-				}, 
-				{
-				   id: 10,
-				   name: 'October'
-				}, 
-				{
-				   id: 11,
-				   name: 'November'
-				}, 
-				{
-				   id: 12,
-				   name: 'December'
-				}
-            ],
+            months: {
+            	1: 'Январь', 
+            	2: 'Февраль', 
+            	3: 'Март', 
+            	4: 'Апрель', 
+            	5: 'Май', 
+            	6: 'Июнь', 
+            	7: 'Июль', 
+            	8: 'Август', 
+            	9: 'Сентябрь', 
+            	10: 'Октябрь', 
+            	11: 'Ноябрь', 
+            	12: 'Декабрь'
+			},
             daysOfWeek: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
         });
 

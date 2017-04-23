@@ -44,7 +44,6 @@
 
         function getSchedule() {
             return $http.get('/getSchedule').then(function(result) {
-                //console.log(result);
                 if (result && result.data && !result.data.code) {
                     return result.data;
                 }

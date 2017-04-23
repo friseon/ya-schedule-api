@@ -1,6 +1,7 @@
 var logger = require('winston'),
     database = require('./../db').database,
-    Lecture = require('../models/lecture');
+    Lecture = require('../models/lecture'),
+    _ = require('underscore');
 
 // Routes
 module.exports = function(app) {
@@ -232,7 +233,13 @@ var getSchedule = function(req, res) {
                 lecture = row;
                 lectures.push(lecture);
             });
-            res.send(lectures);
+            res.send(groupLectures(lectures));
         }
 	});
+}
+
+var groupLectures = function(lectures) {
+    return  _.groupBy(lectures, function(item) {
+        return ((new Date(item.date).getMonth() + 1) + "." + new Date(item.date).getFullYear());
+    });
 }

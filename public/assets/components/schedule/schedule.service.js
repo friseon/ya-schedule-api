@@ -9,7 +9,6 @@
     function service($http) {
     	var service = {
             addLecture: addLecture,
-            getSchedule: getSchedule,
             updateLecture: updateLecture,
             removeLecture: removeLecture,
             getLecture: getLecture
@@ -52,20 +51,6 @@
         function removeLecture(lecture) {
             return $http.post('/removeLecture', lecture).then(function(result) {
                 return result ? result.data : false;
-            }, function(err) {
-                console.log(err);
-            })
-        }
-
-        // получение всех лекций
-        function getSchedule() {
-            return $http.get('/getSchedule').then(function(result) {
-                if (result && result.data && !result.data.code) {
-                    return result.data;
-                }
-                else {
-                    return [];
-                }
             }, function(err) {
                 console.log(err);
             })

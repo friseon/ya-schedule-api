@@ -1,5 +1,5 @@
-<h1>{{model.title}}</h1>
-<hr>
+<h2 class="title title_size_xl">{{model.title}}</h2>
+
 <form class="form-horizontal">
 	<div class="form-group">
 		<label class="col-sm-2 control-label">Фамилия</label>
@@ -21,37 +21,31 @@
 	</div>
 	<div class="form-group">
 	    <div class="col-sm-offset-2 col-sm-10">
-	    	<button class="btn btn-default" ng-if="!model.isSelect" ng-click="model.addLector(model.lector)" ng-disabled="!model.lector.name || !model.lector.lastname">Добавить</button>
-			<button class="btn btn-default" ng-if="model.isSelect" ng-click="model.update(model.lector)" ng-disabled="!model.lector.name || !model.lector.lastname">Сохранить</button>
+	    	<button class="btn btn-yellow" ng-if="!model.isSelect" ng-click="model.addLector(model.lector)" ng-disabled="!model.lector.name || !model.lector.lastname">Добавить</button>
+			<button class="btn btn-yellow" ng-if="model.isSelect" ng-click="model.update(model.lector)" ng-disabled="!model.lector.name || !model.lector.lastname">Сохранить</button>
 			<button  class="btn btn-default"ng-if="model.isSelect" ng-click="model.cancel()">Отменить</button>
 	    </div>
 	</div>
 </form>
 
 
+<div ng-if="model.lectors.length > 0">
+	<h2 class="title title_size_xl">Лекторы</h2>
 
-<h1>Лекторы</h1>
-<hr>
-<table class="table">
-	<colgroup>
-		<col>
-		<col width="100%">
-		<col>
-		<col>
-	</colgroup>
-	<thead ng-if="model.lectors.length">
-		<tr>
-			<th>Лектор</th>
-			<th>Информация</th>
-			<th colspan="2"></th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr ng-repeat="item in model.lectors">
-			<td class="nowrap">{{item.fullname}}</td>
-			<td>{{item.description}}</td>
-			<td><button ng-click="model.select(item)"><i class="glyphicon glyphicon-pencil"></i></button></td>
-			<td><button ng-click="model.remove(item)"><i class="glyphicon glyphicon-trash"></i></button></td>
-		</tr>
-	</tbody>
-</table>
+	<table class="table--default">
+		<colgroup>
+			<col width="200">
+			<col width="*">
+			<col>
+			<col>
+		</colgroup>
+		<tbody>
+			<tr ng-repeat="item in model.lectors">
+				<td class="nowrap"><b>{{item.fullname}}</b></td>
+				<td>{{item.description}}</td>
+				<td class="td--button"><button class="btn btn-default" ng-click="model.select(item)"><i class="glyphicon glyphicon-pencil"></i></button></td>
+				<td class="td--button"><button class="btn btn-default" ng-click="model.remove(item)"><i class="glyphicon glyphicon-trash"></i></button></td>
+			</tr>
+		</tbody>
+	</table>
+</div>

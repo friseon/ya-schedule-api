@@ -1,5 +1,5 @@
-<h1>{{model.title}}</h1>
-<hr>
+<h2 class="title title_size_xl">{{model.title}}</h2>
+
 <form class="form-horizontal">
 	<div class="form-group">
 		<label class="col-sm-2 control-label">Наименование</label>
@@ -21,38 +21,32 @@
 	</div>
 	<div class="form-group">
 	    <div class="col-sm-offset-2 col-sm-10">
-	    	<button class="btn btn-default" ng-if="!model.isSelect" ng-click="model.addClassRoom(model.room)" ng-disabled="!model.room.name || !model.room.capacity || !model.room.description">Добавить</button>
-			<button class="btn btn-default" ng-if="model.isSelect" ng-click="model.update(model.room)" ng-disabled="!model.room.name || !model.room.capacity || !model.room.description">Сохранить</button>
+	    	<button class="btn btn-yellow" ng-if="!model.isSelect" ng-click="model.addClassRoom(model.room)" ng-disabled="!model.room.name || !model.room.capacity || !model.room.description">Добавить</button>
+			<button class="btn btn-yellow" ng-if="model.isSelect" ng-click="model.update(model.room)" ng-disabled="!model.room.name || !model.room.capacity || !model.room.description">Сохранить</button>
 			<button class="btn btn-default" ng-if="model.isSelect" ng-click="model.cancel()">Отменить</button>
 	    </div>
 	</div>
 </form>
 
-<h1>Аудитории</h1>
-<hr>
-<table class="table">
-	<colgroup>
-		<col>
-		<col>
-		<col width="100%">
-		<col>
-		<col>
-	</colgroup>
-	<thead ng-if="model.rooms.length">
-		<tr>
-			<th>Наименование</th>
-			<th>Вместимость</th>
-			<th>Описание</th>
-			<th colspan="2"></th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr ng-repeat="room in model.rooms">
-			<td>{{room.name}}</td>
-			<td>{{room.capacity}}</td>
-			<td>{{room.description}}</td>
-			<td><button ng-click="model.select(room)"><i class="glyphicon glyphicon-pencil"></i></button></td>
-			<td><button ng-click="model.remove(room)"><i class="glyphicon glyphicon-trash"></i></button></td>
-		</tr>
-	</tbody>
-</table>
+<div ng-if="model.rooms.length > 0">
+	<h2 class="title title_size_xl">Аудитории</h2>
+
+	<table class="table--default">
+		<colgroup>
+			<col width="300">
+			<col width="*">
+			<col width="60">
+			<col width="40">
+			<col width="40">
+		</colgroup>
+		<tbody>
+			<tr ng-repeat="room in model.rooms">
+				<td><b>{{room.name}}</b></td>
+				<td>{{room.description}}</td>
+				<td>{{room.capacity}}</td>
+				<td class="td--button"><button class="btn btn-default" ng-click="model.select(room)"><i class="glyphicon glyphicon-pencil"></i></button></td>
+				<td class="td--button"><button class="btn btn-default" ng-click="model.remove(room)"><i class="glyphicon glyphicon-trash"></i></button></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
