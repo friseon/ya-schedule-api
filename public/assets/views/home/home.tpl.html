@@ -1,19 +1,63 @@
 <div class="shedule__container">
 	<h2 class="title title_size_xl">Расписание</h2>
+	<div class="filter__container">
+		<form class="form-horizontal">
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Школа</label>
+				<div class="col-sm-10">
+					<select class="form-control" name="school" ng-model="model.filter.school" required>
+						<option value="">Все</option>
+						<option ng-repeat="school in model.schools" value="{{school.name}}">{{school.name}}</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Аудитория</label>
+				<div class="col-sm-10">
+					<select class="form-control" name="room" ng-model="model.filter.room" required>
+					<option value="">Все</option>
+						<option ng-repeat="room in model.rooms" value="{{room.name}}">{{room.name}}</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Дата начала</label>
+				<div class="col-sm-10">
+					<p class="input-group form-control--m">
+						<input type="text" class="form-control" ng-model="model.filter.fromDate" uib-datepicker-popup="dd.MM.yyyy" is-open="model.isLectureFromDateOpened" datepicker-options="model.dateOptions" ng-required="true" clear-text="Очистить" current-text="Сегодня" close-text="Закрыть" popup-placement="bottom-right"/>
+						<span class="input-group-btn">
+						<button type="button" class="btn btn-default" ng-click="model.openLectureFromDate()"><i class="glyphicon glyphicon-calendar"></i></button>
+					  </span>
+					</p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Дата окончания</label>
+				<div class="col-sm-10">
+					<p class="input-group form-control--m">
+						<input type="text" class="form-control" ng-model="model.filter.toDate" uib-datepicker-popup="dd.MM.yyyy" is-open="model.isLectureToDateOpened" datepicker-options="model.dateOptions" ng-required="true" clear-text="Очистить" current-text="Сегодня" close-text="Закрыть" popup-placement="bottom-right"/>
+						<span class="input-group-btn">
+						<button type="button" class="btn btn-default" ng-click="model.openLectureToDate()"><i class="glyphicon glyphicon-calendar"></i></button>
+					  </span>
+					</p>
+				</div>
+			</div>
+		</form>
+	</div>
 	<table class="table--shedule">
 		<tbody>
 			<tr ng-repeat="lectures in model.schedule">
 				<td>
 					<table class="table--lectures">
 						<tbody>
-							<tr>
+							<tr ng-if="(lectures | filter: model.filter.school | filter:model.filter.room | fromTo:model.filter.fromDate:model.filter.toDate).length > 0">
 								<td class="section__separator" colspan="6">
 									<div class="month__title">
 										<span>{{model.months[$index]}}</span>
 									</div>
 								</td>
 							</tr>
-							<tr ng-repeat="lecture in lectures">
+							<tr ng-repeat="lecture in lectures | filter: model.filter.school | filter:model.filter.room | fromTo:model.filter.fromDate:model.filter.toDate">
 								<td class="lecture__day">{{lecture.date | date: "dd"}}</td>
 								<td class="lecture__title">{{lecture.name}}</td>
 								<td class="lecture__speaker"><span class="link" ng-click="model.openLector(lecture.idLector)">{{lecture.lector}}</span></td>

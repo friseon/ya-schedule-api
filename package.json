@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js local",
-    "test": "make test",
+    "test": "./node_modules/.bin/mocha --require should --reporter spec tests/test.js",
     "webpack": "node_modules/.bin/webpack --progress --colors --config webpack.config.js --bail",
     "webpack-w": "node_modules/.bin/webpack -w --config webpack.config.js"
   },

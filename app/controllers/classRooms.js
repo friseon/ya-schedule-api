@@ -1,6 +1,6 @@
 var logger = require('winston'),
     database = require('./../db').database,
-	classRoom = require('../models/classRoom');
+	ClassRoom = require('../models/classRoom');
 
 // Routes
 module.exports = function(app) {
@@ -9,6 +9,7 @@ module.exports = function(app) {
     app.post('/removeClassRoom',removeClassRoom);
     app.get('/getClassRooms', getClassRooms);
     app.get('/classRoom/:id', getClassRoom);
+    app.get('/getClassRoomsFromShedule', getClassRoomsFromShedule)
 };
 
 // Controlls
@@ -22,7 +23,7 @@ var getClassRoom = function(req, res) {
             res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
         }
         else if (rows) {
-            res.send(new classRoom(rows[0]));
+            res.send(new ClassRoom(rows[0]));
         }
     });
 }
@@ -110,11 +111,33 @@ var getClassRooms = function(req, res) {
     	    }
             else {
                 rows.forEach(function (row) {
-                    room = new classRoom(row);
+                    room = new ClassRoom(row);
                     rooms.push(room);
                 });
                 res.send(rooms);
             }
     	});
     }
+}
+
+// получить только те аудитории, которые есть в расписании
+var getClassRoomsFromShedule = function(req, res) {
+    var schools = [];
+
+    database.all("SELECT GROUP_CONCAT(idRoom) from Schedule" ,function(err, rows) {
+        var ids = rows[0]["GROUP_CONCAT(idRoom)"];
+        database.all("SELECT name, capacity, description FROM classRooms WHERE id in (" + ids + ")", function(err, rows) {
+            if (err) {
+                logger.error("GET Schools FROM Schedule", err)
+                res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
+            }
+            else {
+                rows.forEach(function (row) {
+                    school = new ClassRoom(row);
+                    schools.push(school);
+                });
+                res.send(schools);
+            }
+        });
+    })
 }

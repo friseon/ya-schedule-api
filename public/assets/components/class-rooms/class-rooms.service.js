@@ -12,6 +12,7 @@
             getClassRooms: getClassRooms,
             updateClassRoom: updateClassRoom,
             removeClassRoom: removeClassRoom,
+            getClassRoomsFromShedule: getClassRoomsFromShedule
     	}
 
     	return service;
@@ -56,6 +57,22 @@
                 console.log(err);
             })
         }
+
+        // получение аудиторий из расписания
+        function getClassRoomsFromShedule() {
+            return $http.get('/getClassRoomsFromShedule').then(function(result) {
+                if (result && result.data && !result.data.code) {
+                    return result.data;
+                }
+                else {
+                    console.error("Error. Service.getClassRoomsFromShedule");
+                    console.error(result.data);
+                    return [];
+                }
+            }, function(err) {
+                console.log(err);
+            })
+        };
     }
     
 })()

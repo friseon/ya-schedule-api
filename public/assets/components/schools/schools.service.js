@@ -12,6 +12,7 @@
             getSchools: getSchools,
             updateSchool: updateSchool,
             removeSchool: removeSchool,
+            getSchoolsFromShedule: getSchoolsFromShedule
     	}
 
     	return service;
@@ -56,6 +57,22 @@
                 console.log(err);
             })
         }
+
+        // получение всех школ из расписания
+        function getSchoolsFromShedule() {
+            return $http.get('/getSchoolsFromShedule').then(function(result) {
+                if (result && result.data && !result.data.code) {
+                    return result.data;
+                }
+                else {
+                    console.error("Error. Service.getSchoolsFromShedule");
+                    console.error(result.data);
+                    return [];
+                }
+            }, function(err) {
+                console.log(err);
+            })
+        };
     }
     
 })()

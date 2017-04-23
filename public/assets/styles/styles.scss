@@ -143,7 +143,7 @@ textarea {
 	&--lectures {
 		width: 100%;
 		font-size: 16px;
-		td:not(.td--button) {
+		td:not(.td--button):not(.section__separator) {
 		    line-height: 1.3;
 		    padding: 4px 20px 4px 0;
 			border: none;
@@ -157,6 +157,12 @@ textarea {
 
 .form-control {
 	height: 40px;
+}
+
+.form-control {
+	&--m {
+		width: 200px;
+	}
 }
 
 // shedule

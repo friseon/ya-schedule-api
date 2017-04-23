@@ -32,6 +32,7 @@ login = function(req, res) {
 	    	logger.warn('Вход как', user.login, 'не удался - неверный логин или пароль'); 
 	         
 	    	resultData = {
+	    		result: false,
 		        warning: "Неверный логин или пароль"
 	    	}
 	    }

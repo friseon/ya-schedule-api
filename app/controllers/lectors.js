@@ -9,6 +9,7 @@ module.exports = function(app) {
     app.post('/removeLector', removeLector);
     app.get('/getLectors', getLectors);
     app.get('/lector/:id', getLector);
+    app.get('/getLectorsFromShedule', getLectorsFromShedule)
 };
 
 // Controlls
@@ -100,21 +101,41 @@ var removeLector = function(req, res) {
 }
 
 var getLectors = function(req, res) {
-    if (req.session.user) {	
-    	var lectors = [];
-    	
-    	database.all("SELECT id, name, lastname, description FROM Lectors", function(err, rows) {
-    	    if (err) {
-                logger.error("GET ALL FROM Lectors", err);
-    	    	res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
-    	    }
+	var lectors = [];
+	
+	database.all("SELECT id, name, lastname, description FROM Lectors", function(err, rows) {
+	    if (err) {
+            logger.error("GET ALL FROM Lectors", err);
+	    	res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
+	    }
+        else {
+            rows.forEach(function (row) {
+                lector = new Lector(row);
+                lectors.push(lector);
+            });
+            res.send(lectors);
+        }
+	});
+}
+
+// получить только тех лекторов, которые есть в расписании
+var getLectorsFromShedule = function(req, res) {
+    var schools = [];
+
+    database.all("SELECT GROUP_CONCAT(idLector) from Schedule" ,function(err, rows) {
+        var ids = rows[0]["GROUP_CONCAT(idLector)"];
+        database.all("SELECT name, lastname, description FROM Lectors WHERE id in (" + ids + ")", function(err, rows) {
+            if (err) {
+                logger.error("GET Lectors FROM Schedule", err)
+                res.send({error: "Ошибка сервера. Выполнить операцию не удалось"});
+            }
             else {
                 rows.forEach(function (row) {
-                    lector = new Lector(row);
-                    lectors.push(lector);
+                    school = new ClassRoom(row);
+                    schools.push(school);
                 });
-                res.send(lectors);
+                res.send(schools);
             }
-    	});
-    }
+        });
+    })
 }

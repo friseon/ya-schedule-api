@@ -3,6 +3,7 @@ var adminBundle = __dirname + "/admin-bundle.js";
 var path = require('path');
 var node_modules_dir = path.resolve(__dirname, 'node_modules/angular-ui-bootstrap/dist/');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var webpack = require('webpack');
 
 module.exports = {
   context: __dirname,
@@ -39,6 +40,9 @@ module.exports = {
           filename: 'index.css',
           disable: false,
           allChunks: true
-        })
+        }),
+        new webpack.ProvidePlugin({
+          "_": "underscore"
+        }) 
   ]
 }

@@ -78,7 +78,6 @@
         };
 
         function logout() {
-            console.log("!");
             return $http.post('/logout').then(function(data) {
                 window.location = '/';
                 localStorage.removeItem('user');
