@@ -6,14 +6,33 @@
         .controller('homeCtrl', homeCtrl);
 
         homeCtrl.$inject = [
-            '$scope', 'appService', '$uibModal', 'modalsConstants', 'scheduleConstants'
+            '$scope', 'appService', '$uibModal', 'modalsConstants', 'scheduleConstants', 'schoolsService', 'classRoomsService'
         ];
 
-        function homeCtrl($scope, appService, $uibModal, modalsConstants, scheduleConstants) {
+        function homeCtrl($scope, appService, $uibModal, modalsConstants, scheduleConstants, schoolsService, classRoomsService) {
         	var model = this;
 
             model.schedule = [];
             model.months = [];
+            model.schools = [];
+            model.rooms = [];
+
+            // получение школ
+            var getSchools = function() {
+                schoolsService.getSchools().then(function(data){
+                    model.schools = data;
+                });
+            };
+
+            // получение аудиторий
+            var getRooms = function() {
+                classRoomsService.getClassRooms().then(function(data){
+                    model.rooms = data;
+                });
+            };
+
+            getSchools();
+            getRooms();
 
             var getSchedule = function() {
                 appService.getSchedule().then(function(data) {

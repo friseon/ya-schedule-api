@@ -187,7 +187,7 @@
                 });
             };
 
-            // получение аудиториц
+            // получение аудиторий
             var getRooms = function() {
                 classRoomsService.getClassRooms().then(function(data){
                     model.rooms = data;
